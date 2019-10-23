@@ -59,3 +59,10 @@ typings/
 
 # next.js build output
 .next
+
+# Python virtual environments
+flask-test/venv/*
+django-test/django-env/*
+
+# Dumb mac file
+*.DS_Store
