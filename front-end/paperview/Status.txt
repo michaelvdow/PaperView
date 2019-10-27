@@ -1,0 +1,2 @@
+The logic for searching, updating, and deleting entries is present in the UI. But it needs to be integrated with 
+the database logic. The UI is using React-Redux for managing state.

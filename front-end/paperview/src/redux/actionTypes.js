@@ -1,0 +1,10 @@
+export const SUBMIT_SEARCH = "SUBMIT_SEARCH";
+export const TEXT_CHANGE = "TEXT_CHANGE";
+export const CHANGE_SEARCH_TYPE = "CHANGE_SEARCH_TYPE";
+export const ON_SEARCH_RESULT = "ON_SEARCH_RESULT";
+export const ON_DETAILS_CLICK = "ON_DETAILS_CLICK";
+export const ON_DELETE_CLICK = "ON_DELETE_CLICK";
+export const DELETE_ROW = "DELETE_ROW";
+export const SET_DETAILS_DATA = "SET_DETAILS_DATA";
+export const SET_PANEL = "SET_PANEL";
+export const UPDATE_ROW = "UPDATE_ROW";
