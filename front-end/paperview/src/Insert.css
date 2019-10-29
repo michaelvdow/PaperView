@@ -1,0 +1,23 @@
+#AppBar {
+    position: 'relative';
+}
+
+#InsertPanel {
+    display: flex;
+    flex-grow: 1;
+    width: 600px;
+    margin-left: 'auto';
+    margin-right: 'auto';
+}
+
+#InsertForm {
+    display: flex;
+    flex-grow: 1;
+    width: 500px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#submitButton {
+    display: flex;
+}
