@@ -1,5 +1,4 @@
 import React from 'react';
-// import './Results.css';
 import MaterialTable from "material-table";
 import Paper from "@material-ui/core/Paper";
 import * as selectors from './redux/selectors'
@@ -24,7 +23,7 @@ class Details extends React.Component {
                         columns={
                             this.props.searchType === Constants.AUTHOR ? 
                             [
-                                { title: "Author ID", field: "authorId", type: "numeric" },
+                                { title: "Author ID", field: "authorId", type: "numeric", editable: 'never' },
                                 { title: "Author Name", field: "name" },
                                 { title: "Affiliation", field: "affiliation" },
                                 { title: "Cited By", field: "citedBy", type: "numeric" },
@@ -32,8 +31,16 @@ class Details extends React.Component {
                                 { title: "H-Index", field: "hindex", type: "numeric" },
                                 { title: "I10-Index", field: "i10index", type: "numeric" }
                             ]:
-                            [
-
+                            [//ArticleId, PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal
+                                { title: "Article ID", field: "articleId", type: "numeric", editable: 'never' },
+                                { title: "Title", field: "title" },
+                                { title: "Primary Author ID", field: "primaryAuthorId", type: "numeric" },
+                                { title: "Cited By", field: "citedBy", type: "numeric" },
+                                { title: "Citations", field: "citations", type: "numeric" },
+                                { title: "Year", field: "year", type: "numeric" },
+                                { title: "Publisher", field: "publisher" },
+                                { title: "Journal", field: "journal" },
+                                { title: "URL", field: "url" }
                             ]
                         }
                         data={[
@@ -44,14 +51,9 @@ class Details extends React.Component {
                             onRowUpdate: (newData, oldData) =>
                               new Promise((resolve, reject) => {
                                 setTimeout(() => {
-                                  {
-                                      this.props.updateRow(newData)
-
-                                    // const data = this.state.data;
-                                    // const index = data.indexOf(oldData);
-                                    // data[index] = newData;
-                                    // this.setState({ data }, () => resolve());
-                                  }
+                                    {
+                                        this.props.updateRow(newData)
+                                    }
                                   resolve()
                                 }, 200)
                               })
