@@ -17,7 +17,7 @@ import * as actions from './redux/actions'
 
 function makeAuthorInsertForm() {
     return (
-        <React.Fragment>
+        <div id = "authorInsertFields">
             <Grid container spacing={3} id="InsertForm">
                 <Grid item xs={12}>
                     <TextField
@@ -77,7 +77,7 @@ function makeAuthorInsertForm() {
                     />
                 </Grid>
             </Grid>
-        </React.Fragment>
+        </div>
     );
 }
 
@@ -177,19 +177,22 @@ class InsertForm extends React.Component {
 
     render() {
         return (
-            <div>
-                <AppBar position="static" color = "inherit">
+            <div id = "insertFields">
+                <AppBar position="static" color = "inherit" id = "appBar">
                     <Tabs value={this.props.tab} onChange={(event, newValue) => this.props.setTab(newValue)} centered indicatorColor="primary" textColor="primary">
                         <Tab label="Insert Paper" />
                         <Tab label="Insert Scholar" />
                     </Tabs>
                 </AppBar>
-                <TabPanel value={this.props.tab} index={0}>
+                <TabPanel value={this.props.tab} index={0} >
                     {makePaperInsertForm()}
                 </TabPanel>
                 <TabPanel value={this.props.tab} index={1}>
                     {makeAuthorInsertForm()}
                 </TabPanel>
+                <Button id="submitButton" variant="contained" color="primary" onClick={() => this.props.onSubmit()}>
+                    Submit
+                </Button>
             </div>
         );
     }
