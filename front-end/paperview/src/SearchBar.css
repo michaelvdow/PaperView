@@ -24,8 +24,12 @@
 
 #searchFieldSelector {
     display: flex;
+    margin-bottom: 8px;
+    margin-right: 10px;
 }
 
 #searchFieldButton {
     display: flex;
+    margin-bottom: 10px;
+    margin-left: 10px;
 }
