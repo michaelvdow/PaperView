@@ -6,7 +6,8 @@ const initialState = {
     searchType: Constants.AUTHOR,
     searchData: [],
     panel: Constants.PANEL_SEARCH,
-    detailsData: {}
+    detailsData: {},
+    mainTab: 0
 }
 
 function rootReducer(state=initialState, action) {
@@ -23,6 +24,8 @@ function rootReducer(state=initialState, action) {
             return Object.assign({}, state, {detailsData: action.data, panel: Constants.PANEL_DETAILS})
         case actionTypes.SET_PANEL:
             return Object.assign({}, state, {panel: action.panel})
+        case actionTypes.SET_MAIN_TAB:
+                return Object.assign({}, state, {mainTab: action.tab})
         default:
             return state
     }

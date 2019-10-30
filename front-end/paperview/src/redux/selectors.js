@@ -17,3 +17,7 @@ export const getDetailsData = store => {
 export const getPanel = store => {
     return store.panel;
 }
+
+export const getMainTab = store => {
+    return store.mainTab;
+}

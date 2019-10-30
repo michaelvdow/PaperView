@@ -68,3 +68,10 @@ export const updateRow = (data) => {
         data: data
     }
 }
+
+export const setMainTab = (data) => {
+    return {
+        type: actions.SET_MAIN_TAB,
+        tab: data
+    }
+}
