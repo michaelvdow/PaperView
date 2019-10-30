@@ -61,8 +61,11 @@ typings/
 .next
 
 # Python virtual environments
-flask-test/venv/*
+flask-test/flask-env/*
 django-test/django-env/*
 
 # Dumb mac file
 *.DS_Store
+
+# pycaches
+*__pycache__*
