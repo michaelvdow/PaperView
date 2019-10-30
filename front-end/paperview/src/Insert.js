@@ -10,6 +10,77 @@ import TextField from '@material-ui/core/TextField';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
+import * as Constants from './Constants'
+import * as selectors from './redux/selectors'
+import * as actions from './redux/actions'
+
+
+function makeAuthorInsertForm() {
+    return (
+        <React.Fragment>
+            <Grid container spacing={3} id="InsertForm">
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        id="name"
+                        name="name"
+                        label="Name"
+                        autoComplete="name"
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        id="email"
+                        name="email"
+                        label="Email"
+                        autoComplete="email"
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        id="affiliation"
+                        name="affiliation"
+                        label="Affiliation"
+                        autoComplete="affiliation"
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        id="citationNumber"
+                        name="citationNumber"
+                        label="Citation number"
+                        autoComplete="citationNumber"
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                    <TextField
+                        required
+                        id="hIndex"
+                        name="hIndex"
+                        label="H-Index"
+                        autoComplete="hIndex"
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                    <TextField
+                        id="i10Index"
+                        name="i10Index"
+                        label="I10-Index"
+                        autoComplete="i10Index"
+                        fullWidth
+                    />
+                </Grid>
+            </Grid>
+        </React.Fragment>
+    );
+}
 
 function makePaperInsertForm() {
     return (
@@ -96,17 +167,9 @@ function TabPanel(props) {
 }
 
 
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
-
 class InsertForm extends React.Component {
     constructor(props) {
         super(props);
-        this.value = 0;
     }
 
     handleChange(){}
@@ -115,16 +178,16 @@ class InsertForm extends React.Component {
         return (
             <div>
                 <AppBar position="static">
-                    <Tabs value={this.value} onChange={this.handleChange}>
-                        <Tab label="Insert Paper" {...a11yProps(0)} />
-                        <Tab label="Insert Scholar" {...a11yProps(1)} />
+                    <Tabs value={this.props.tab} onChange={(event, newValue) => this.props.setTab(newValue)}>
+                        <Tab label="Insert Paper" />
+                        <Tab label="Insert Scholar" />
                     </Tabs>
                 </AppBar>
-                <TabPanel value={this.value} index={0}>
+                <TabPanel value={this.props.tab} index={0}>
                     {makePaperInsertForm()}
                 </TabPanel>
-                <TabPanel value={this.value} index={1}>
-                    Item Two
+                <TabPanel value={this.props.tab} index={1}>
+                    {makeAuthorInsertForm()}
                 </TabPanel>
             </div>
         );
@@ -134,13 +197,14 @@ class InsertForm extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        
+        panel: selectors.getPanel(state),
+        tab: selectors.getAuthorPaperTab(state)
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-
+        setTab: (value) => dispatch(actions.setAuthorPaperTab(value))
     }
 }
 

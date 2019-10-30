@@ -9,3 +9,4 @@ export const SET_DETAILS_DATA = "SET_DETAILS_DATA";
 export const SET_PANEL = "SET_PANEL";
 export const UPDATE_ROW = "UPDATE_ROW";
 export const SET_MAIN_TAB = "SET_MAIN_TAB";
+export const SET_AUTHOR_PAPER_TAB = "SET_AUTHOR_PAPER_TAB";

@@ -21,3 +21,7 @@ export const getPanel = store => {
 export const getMainTab = store => {
     return store.mainTab;
 }
+
+export const getAuthorPaperTab = store => {
+    return store.authorPaperTab;
+}

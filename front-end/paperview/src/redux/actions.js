@@ -75,3 +75,10 @@ export const setMainTab = (data) => {
         tab: data
     }
 }
+
+export const setAuthorPaperTab = (data) => {
+    return {
+        type: actions.SET_AUTHOR_PAPER_TAB,
+        tab: data
+    }
+}
