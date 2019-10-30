@@ -60,7 +60,6 @@ function makeAuthorInsertForm() {
                 </Grid>
                 <Grid item xs={12} sm={3}>
                     <TextField
-                        required
                         id="hIndex"
                         name="hIndex"
                         label="H-Index"
@@ -84,68 +83,70 @@ function makeAuthorInsertForm() {
 
 function makePaperInsertForm() {
     return (
-        <React.Fragment>
-            <Grid container spacing={3} id="InsertForm">
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        id="title"
-                        name="title"
-                        label="Title"
-                        autoComplete="title"
-                        fullWidth
-                    />
+        <div id = "paperInsertFields">
+            <React.Fragment>
+                <Grid container spacing={3} id="InsertForm">
+                    <Grid item xs={12}>
+                        <TextField
+                            required
+                            id="title"
+                            name="title"
+                            label="Title"
+                            autoComplete="title"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            required
+                            id="authorName"
+                            name="authorName"
+                            label="Author name"
+                            autoComplete="authorName"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            required
+                            id="url"
+                            name="url"
+                            label="Url"
+                            autoComplete="url"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="citationNumber"
+                            name="citationNumber"
+                            label="Citation number"
+                            autoComplete="citationNumber"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            required
+                            id="year"
+                            name="year"
+                            label="Year"
+                            autoComplete="year"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="journalName"
+                            name="journalName"
+                            label="Journal name"
+                            autoComplete="journalName"
+                            fullWidth
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        id="authorName"
-                        name="authorName"
-                        label="Author name"
-                        autoComplete="authorName"
-                        fullWidth
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        id="url"
-                        name="url"
-                        label="Url"
-                        autoComplete="url"
-                        fullWidth
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        id="citationNumber"
-                        name="citationNumber"
-                        label="Citation number"
-                        autoComplete="citationNumber"
-                        fullWidth
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        required
-                        id="year"
-                        name="year"
-                        label="Year"
-                        autoComplete="year"
-                        fullWidth
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        id="journalName"
-                        name="journalName"
-                        label="Journal name"
-                        autoComplete="journalName"
-                        fullWidth
-                    />
-                </Grid>
-            </Grid>
-        </React.Fragment>
+            </React.Fragment>
+        </div>
     );
 }
 
@@ -177,8 +178,8 @@ class InsertForm extends React.Component {
     render() {
         return (
             <div>
-                <AppBar position="static">
-                    <Tabs value={this.props.tab} onChange={(event, newValue) => this.props.setTab(newValue)}>
+                <AppBar position="static" color = "inherit">
+                    <Tabs value={this.props.tab} onChange={(event, newValue) => this.props.setTab(newValue)} centered indicatorColor="primary" textColor="primary">
                         <Tab label="Insert Paper" />
                         <Tab label="Insert Scholar" />
                     </Tabs>

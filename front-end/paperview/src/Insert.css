@@ -10,6 +10,14 @@
     margin-right: 'auto';
 }
 
+#paperInsertFields {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: center;
+    width: 800px;
+}
+
 #InsertForm {
     display: flex;
     flex-grow: 1;
