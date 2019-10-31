@@ -8,7 +8,9 @@ const initialState = {
     panel: Constants.PANEL_SEARCH,
     detailsData: {},
     mainTab: 0,
-    authorPaperTab: 0
+    authorPaperTab: 0,
+    isSnackBarOpen: false,
+    snackBarMessage: ""
 }
 
 function rootReducer(state=initialState, action) {
@@ -21,14 +23,18 @@ function rootReducer(state=initialState, action) {
             return Object.assign({}, state, {searchData: action.input})
         case actionTypes.DELETE_ROW:
             return Object.assign({}, state, {searchData: [...state.searchData.filter((elem, idx) => idx != action.index)]})
-        case actionTypes.SET_DETAILS_DATA:
-            return Object.assign({}, state, {detailsData: action.data, panel: Constants.PANEL_DETAILS})
-        case actionTypes.SET_PANEL:
-            return Object.assign({}, state, {panel: action.panel})
         case actionTypes.SET_MAIN_TAB:
             return Object.assign({}, state, {mainTab: action.tab})
         case actionTypes.SET_AUTHOR_PAPER_TAB:
             return Object.assign({}, state, {authorPaperTab: action.tab})
+        case actionTypes.ON_SNACK_BAR_CLOSE:
+            if (action.reason === 'clickaway') {
+                return state
+            } else {
+                return Object.assign({}, state, {isSnackBarOpen: false})
+            }
+        case actionTypes.LAUNCH_SNACK_BAR:
+            return Object.assign({}, state, {isSnackBarOpen: true, snackBarMessage: action.message})
         default:
             return state
     }

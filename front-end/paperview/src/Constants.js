@@ -8,3 +8,7 @@ export const TABS_INSERT = 1;
 
 export const AUTHOR = "author"
 export const ARTICLE = "article"
+
+// Django stuff
+export const URL = 'localhost:3066'
+export const SUCCESS = "SUCCESS"

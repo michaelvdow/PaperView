@@ -1,12 +1,6 @@
 import React from 'react';
-import './Results.css';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import MaterialTable from "material-table";
+import Paper from "@material-ui/core/Paper";
 import * as selectors from './redux/selectors'
 import * as actions from './redux/actions'
 import * as Constants from './Constants'
@@ -20,44 +14,61 @@ class Results extends React.Component {
 
     render() {
         return (
-            <div className="Results">
-                <Paper id="resultsTable">
-                    <Table>
-                        <TableHead>
-                        <TableRow>
-                            <TableCell>{this.props.searchType === Constants.AUTHOR ? "Author" : "Article"} Name</TableCell>
-                            <TableCell align="right">Details</TableCell>
-                            <TableCell align="right">Remove</TableCell>
-                        </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        {this.props.data.map(row => (
-                            <TableRow key={row.name}>
-                                <TableCell component="th" scope="row">
-                                    {row.name}
-                                </TableCell>
-
-                                <TableCell align="right">
-                                    <Button onClick={() => this.props.onDetailsClick(this.props.searchType === Constants.AUTHOR ? row.authorId : row.articleId)}
-                                    variant="contained"
-                                    color="primary">
-                                        Details
-                                    </Button>
-                                </TableCell>
-
-                                <TableCell align="right">
-                                    <Button onClick={() => this.props.onDeleteClick(this.props.searchType === Constants.AUTHOR ? row.authorId : row.articleId)}
-                                    variant="contained" 
-                                    color="secondary">
-                                        Delete
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
+            <div className="Results" style={{ maxWidth: "90%", marginLeft: "5%", marginTop: "30px"}}>
+                <Paper>
+                    <MaterialTable
+                        options={{
+                            search: false
+                        }}
+                        columns={
+                            this.props.searchType === Constants.AUTHOR ? 
+                            [
+                                { title: "Author ID", field: "AuthorId", type: "numeric", editable: 'never' },
+                                { title: "Author Name", field: "Name" },
+                                { title: "Affiliation", field: "Affiliation" },
+                                { title: "Cited By", field: "CitedBy", type: "numeric" },
+                                { title: "Email", field: "Email" },
+                                { title: "H-Index", field: "HIndex", type: "numeric" },
+                                { title: "I10-Index", field: "I10Index", type: "numeric" }
+                            ]:
+                            [
+                                { title: "Article ID", field: "ArticleId", type: "numeric", editable: 'never' },
+                                { title: "Title", field: "Title" },
+                                { title: "Primary Author ID", field: "PrimaryAuthorId", type: "numeric" },
+                                { title: "Cited By", field: "CitedBy", type: "numeric" },
+                                { title: "Citations", field: "Citations", type: "numeric" },
+                                { title: "Year", field: "Year", type: "numeric" },
+                                { title: "Publisher", field: "Publisher" },
+                                { title: "Journal", field: "Journal" },
+                                { title: "URL", field: "Url" }
+                            ]
+                        }
+                        data={
+                            this.props.detailsData
+                        }
+                        title={this.props.searchType === Constants.AUTHOR ? "Author Details" : "Article Details"}
+                        editable={{
+                            onRowUpdate: (newData, oldData) =>
+                              new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    {
+                                        this.props.updateRow(oldData, newData)
+                                    }
+                                  resolve()
+                                }, 200)
+                              }),
+                              onRowDelete: oldData =>
+                                new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    {
+                                        this.props.onRowDelete(oldData)
+                                    }
+                                    resolve()
+                                }, 1000)
+                                })
+                            }}
+                    />
                 </Paper>
-                
             </div>  
         );
     }
@@ -66,14 +77,14 @@ class Results extends React.Component {
 const mapStateToProps = (state) => {
     return {
         searchType: selectors.getSearchType(state),
-        data: selectors.getSearchData(state)
+        detailsData: selectors.getSearchData(state)
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onDetailsClick: (id) => dispatch(actions.onDetailsClick(id)),
-        onDeleteClick: (id) => dispatch(actions.onDeleteClick(id))
+        updateRow: (oldData, newData) => dispatch(actions.updateRow(oldData, newData)),
+        onRowDelete: (oldData) => dispatch(actions.onRowDelete(oldData))
     }
 }
 

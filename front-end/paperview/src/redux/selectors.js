@@ -25,3 +25,11 @@ export const getMainTab = store => {
 export const getAuthorPaperTab = store => {
     return store.authorPaperTab;
 }
+
+export const isSnackBarOpen = store => {
+    return store.isSnackBarOpen;
+}
+
+export const getSnackBarMessage = store => {
+    return store.snackBarMessage;
+}

@@ -27,13 +27,6 @@ export const onSearchResult = (input) => {
     }
 }
 
-export const onDetailsClick = (id) => {
-    return {
-        type: actions.ON_DETAILS_CLICK,
-        id: id
-    }
-}
-
 export const onDeleteClick = (id) => {
     return {
         type: actions.ON_DELETE_CLICK,
@@ -48,24 +41,11 @@ export const deleteRow = (index) => {
     }
 }
 
-export const setDetailsData = (data) => {
-    return {
-        type: actions.SET_DETAILS_DATA,
-        data: data
-    }
-}
-
-export const setPanel = (panel) => {
-    return {
-        type: actions.SET_PANEL,
-        panel: panel
-    }
-}
-
-export const updateRow = (data) => {
+export const updateRow = (oldData, newData) => {
     return {
         type: actions.UPDATE_ROW,
-        data: data
+        oldData: oldData,
+        newData: newData
     }
 }
 
@@ -80,5 +60,26 @@ export const setAuthorPaperTab = (data) => {
     return {
         type: actions.SET_AUTHOR_PAPER_TAB,
         tab: data
+    }
+}
+
+export const onRowDelete = (data) => {
+    return {
+        type: actions.ON_ROW_DELETE,
+        oldData: data
+    }
+}
+
+export const onSnackBarClose = (reason) => {
+    return {
+        type: actions.ON_SNACK_BAR_CLOSE,
+        reason: reason
+    }
+}
+
+export const launchSnackBar = (message) => {
+    return {
+        type: actions.LAUNCH_SNACK_BAR,
+        message: message
     }
 }
