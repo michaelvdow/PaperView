@@ -17,8 +17,13 @@ def listnames(request):
 
 def searchForName(request):
     name = request.GET['name']
+    #search_string = '%'.join(name.split(' '))
+    #search_string = '%'.join(search_string.split('.'))
+    #search_string = '%' + search_string + '%'
+    search_string = build_search_string(name)
     with connection.cursor() as cursor:
-        cursor.execute("SELECT name FROM test WHERE name = %s", [name])
+        cursor.execute("SELECT name FROM test WHERE name LIKE %s",
+                       [search_string])
         sql_response = cursor.fetchall()
     output = ', '.join([row[0] for row in sql_response])
     return HttpResponse(output)
@@ -43,3 +48,10 @@ def tothelimit(request):
         response_dict = {'everybody': 'SAD'}
 
     return JsonResponse(response_dict)
+
+# Helper functions
+def build_search_string(typed_input):
+    search_string = '%'.join(typed_input.split(' '))
+    search_string = '%'.join(search_string.split('.'))
+    search_string = '%' + search_string + '%'
+    return search_string
