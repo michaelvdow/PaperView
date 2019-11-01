@@ -65,7 +65,7 @@ flask-test/flask-env/*
 django-test/django-env/*
 
 # Dumb mac file
-*.DS_Store
+.DS_Store
 
 # pycaches
-*__pycache__*
+__pycache__

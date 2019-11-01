@@ -9,10 +9,21 @@ function *submit() {
     let searchInput = yield select(selectors.getSearchInput)
 
     try {
-        const response = call(fetch, `${Constants.URL}/search/${searchType}?input="${searchInput}"`)
+        const searchField = (searchType === Constants.AUTHOR ? "name" : "title")
+        const response = yield call(fetch, `${Constants.URL}/search/${searchType}?${searchField}="${searchInput}"`)
         const responseBody = response.json()
         if (responseBody.result === Constants.SUCCESS) {
-            yield put(actions.onSearchResult(responseBody))
+            if (searchType === Constants.ARTICLE) {
+                const articles = responseBody.Articles
+                // Get the author name for each article
+                for (var i = 0; i < articles.length; i++) {
+                    const authorResponse = yield call(fetch, `${Constants.URL}/${searchType}/${articles[i].PrimaryAuthorId}"`)
+                    articles[i]["authorName"] = authorResponse.Name;
+                }
+                yield put(actions.onSearchResult(articles))
+            } else {
+                yield put(actions.onSearchResult(responseBody.Authors))
+            }
         } else {
             yield put(actions.launchSnackBar("Failed to find any results"))
         }

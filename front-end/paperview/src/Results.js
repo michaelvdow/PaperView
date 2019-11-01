@@ -34,6 +34,7 @@ class Results extends React.Component {
                             [
                                 { title: "Article ID", field: "ArticleId", type: "numeric", editable: 'never' },
                                 { title: "Title", field: "Title" },
+                                { title: "Author Name", field: "authorName" },
                                 { title: "Primary Author ID", field: "PrimaryAuthorId", type: "numeric" },
                                 { title: "Cited By", field: "CitedBy", type: "numeric" },
                                 { title: "Citations", field: "Citations", type: "numeric" },
