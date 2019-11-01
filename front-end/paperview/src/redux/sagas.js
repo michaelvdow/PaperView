@@ -7,11 +7,13 @@ import * as Constants from '../Constants'
 function *submit() {
     let searchType = yield select(selectors.getSearchType)
     let searchInput = yield select(selectors.getSearchInput)
+    console.log(searchInput)
 
     try {
         const searchField = (searchType === Constants.AUTHOR ? "name" : "title")
-        const response = yield call(fetch, `${Constants.URL}/search/${searchType}?${searchField}="${searchInput}"`)
-        const responseBody = response.json()
+        const response = yield call(fetch, `${Constants.URL}/search/${searchType}?${searchField}=${searchInput}`)
+        console.log(response)
+        const responseBody = yield response.json()
         if (responseBody.result === Constants.SUCCESS) {
             if (searchType === Constants.ARTICLE) {
                 const articles = responseBody.Articles
