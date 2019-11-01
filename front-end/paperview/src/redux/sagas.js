@@ -129,6 +129,9 @@ function *insert(action) {
             }
             else {
                 let authorID = responseBody.Authors[0].AuthorId;
+                let authorName = responseBody.Authors[0].Name;
+                console.log(authorID)
+                console.log(authorName)
                 let options = {
                     method: 'POST',
                     body: JSON.stringify({Title: insertArticleTitle,
