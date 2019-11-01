@@ -86,11 +86,27 @@ def specific_article(request, articleid):
 
     return HttpResponse('stub')
 
+@csrf_exempt
 def new_author(request):
+    author = json.loads(request.body)
+    with connection.cursor() as cursor:
+        cursor.execute("INSERT INTO Author"
+                       "(Name, Affiliation, CitedBy, HIndex, I10Index) "
+                       "VALUES (%s, %s, %s, %s, %s)",
+                       [
+                           author['Name'],
+                           author['Affiliation'],
+                           author['CitedBy'],
+                           author['HIndex'],
+                           author['I10Index']
+                       ])
+        rows = cursor.fetchall()
+        print(rows)
+    return JsonResponse({'result':'SUCCESS'})
 
-    return HttpResponse('stub')
-
+@csrf_exempt
 def new_article(request):
+
     return HttpResponse('stub')
 
 def index(request):
