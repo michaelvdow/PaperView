@@ -10,8 +10,8 @@ def search_for_author(request):
     name = request.GET['name']
     search_string = build_search_string(name)
     with connection.cursor() as cursor:
-        cursor.execute("SELECT AuthorId, Name, Affiliation, CitedBy, Email, "
-                       "HIndex, I10Inddex FROM Author WHERE Name LIKE %s",
+        cursor.execute("SELECT AuthorId, Name, Affiliation, CitedBy, "
+                       "HIndex, I10Index FROM Author WHERE Name LIKE %s",
                        [search_string])
         rows = cursor.fetchall()
 
@@ -22,9 +22,8 @@ def search_for_author(request):
             'Name': row[1],
             'Affiliation': row[2],
             'CitedBy': row[3],
-            'Email': row[4],
-            'HIndex': row[5],
-            'I10Index': row[6]
+            'HIndex': row[4],
+            'I10Index': row[5]
         }
         author_list.append(author_dict)
 
