@@ -174,7 +174,7 @@ function *insert(action) {
                                           CitedBy: insertAuthorCitation,
                                         //  Email: insertAuthorEmail,
                                           HIndex: insertAuthorH,
-                                          I10index: insertAuthorI10,
+                                          I10Index: insertAuthorI10,
                                           Interests: [],
                                           YearlyCitations: []
                                       })
