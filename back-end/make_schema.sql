@@ -5,14 +5,15 @@ CREATE TABLE IF NOT EXISTS test(
        name VARCHAR(32)
 );
 
---CREATE DATABASE IF NOT EXISTS googleScholar;
---USE googleScholar;
+#CREATE DATABASE IF NOT EXISTS googleScholar;
+#USE googleScholar;
 
 CREATE TABLE IF NOT EXISTS Author(
-    AuthorId INTEGER PRIMARY KEY,
+    AuthorId INTEGER PRIMARY KEY AUTO_INCREMENT,
     Name TEXT NOT NULL,
     Affiliation TEXT,
     CitedBy INTEGER,
+    Email TEXT,  # right?
     HIndex INTEGER,
     I10Index INTEGER
 );
