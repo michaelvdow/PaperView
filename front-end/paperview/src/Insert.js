@@ -33,17 +33,6 @@ function AuthorInsertForm(props) {
                 <Grid item xs={12}>
                     <TextField
                         required
-                        id="email"
-                        name="email"
-                        label="Email"
-                        autoComplete="email"
-                        fullWidth
-                        onChange={(event, index, value) => props.onInsertAuthorEmailChange(event.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        required
                         id="affiliation"
                         name="affiliation"
                         label="Affiliation"
