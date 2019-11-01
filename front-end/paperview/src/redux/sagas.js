@@ -90,6 +90,11 @@ function *deleteRow(action) {
     }
 }
 
+function *insert(action) {
+    let insertType = yield select(selectors.getAuthorPaperTab)
+    console.log("GREAT!")
+}
+
 function *watchUpdateRow() {
     yield takeLatest(actionTypes.UPDATE_ROW, updateRow);
 }
@@ -104,6 +109,10 @@ function *watchSubmit() {
 
 function *watchDeleteRow() {
     yield takeLatest(actionTypes.ON_ROW_DELETE, deleteRow);
+}
+
+function * watchInsert() {
+    yield takeLatest(actionTypes.ON_INSERT_SUBMIT, insert);
 }
 
 function* rootSaga () {

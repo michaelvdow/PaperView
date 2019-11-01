@@ -83,3 +83,107 @@ export const launchSnackBar = (message) => {
         message: message
     }
 }
+
+export const onInsertArticleTitleChange = (input) => {
+    return {
+        type: actions.ON_INSERT_ARTICLE_TITLE,
+        input: input
+    }
+}
+
+export const onInsertArticleAuthorNameChange = (input) => {
+    return {
+        type: actions.ON_INSERT_ARTICLE_AUTHOR_NAME,
+        input: input
+    }
+}
+
+export const onInsertArticleURLChange = (input) => {
+    return {
+        type: actions.ON_INSERT_ARTICLE_URL,
+        input: input
+    }
+}
+
+export const onInsertArticleCitedByChange = (input) => {
+    return {
+        type: actions.ON_INSERT_ARTICLE_CITED_BY,
+        input: input
+    }
+}
+
+export const onInsertArticleCitationsChange = (input) => {
+    return {
+        type: actions.ON_INSERT_ARTICLE_CITATIONS,
+        input: input
+    }
+}
+
+export const onInsertArticleYearChange = (input) => {
+    return {
+        type: actions.ON_INSERT_ARTICLE_YEAR,
+        input: input
+    }
+}
+
+export const onInsertArticlePublisherChange = (input) => {
+    return {
+        type: actions.ON_INSERT_ARTICLE_PUBLISHER,
+        input: input
+    }
+}
+
+export const onInsertArticleJournalChange = (input) => {
+    return {
+        type: actions.ON_INSERT_ARTICLE_JOURNAL,
+        input: input
+    }
+}
+
+export const onInsertAuthorNameChange = (input) => {
+    return {
+        type: actions.ON_INSERT_AUTHOR_NAME,
+        input: input
+    }
+}
+
+export const onInsertAuthorEmailChange = (input) => {
+    return {
+        type: actions.ON_INSERT_AUTHOR_EMAIL,
+        input: input
+    }
+}
+
+export const onInsertAuthorAffilicationChange = (input) => {
+    return {
+        type: actions.ON_INSERT_AUTHOR_AFFILIATION,
+        input: input
+    }
+}
+
+export const onInsertAuthorCitationChange = (input) => {
+    return {
+        type: actions.ON_INSERT_AUTHOR_CITATION,
+        input: input
+    }
+}
+
+export const onInsertAuthorHChange = (input) => {
+    return {
+        type: actions.ON_INSERT_AUTHOR_H,
+        input: input
+    }
+}
+
+export const onInsertAuthorI10Change = (input) => {
+    return {
+        type: actions.ON_INSERT_AUTHOR_I10,
+        input: input
+    }
+}
+
+export const onInsertSubmit = (input) => {
+    return {
+        type: actions.ON_INSERT_SUBMIT
+    }
+}
