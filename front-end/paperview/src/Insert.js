@@ -15,187 +15,175 @@ import * as selectors from './redux/selectors'
 import * as actions from './redux/actions'
 
 
-class AuthorInsertForm extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+function AuthorInsertForm(props) {
+    return (
+        <div id = "authorInsertFields">
+            <Grid container spacing={3} id="InsertForm">
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        id="name"
+                        name="name"
+                        label="Name"
+                        autoComplete="name"
+                        fullWidth
+                        onChange={(event, index, value) => props.onInsertAuthorNameChange(value)}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        id="email"
+                        name="email"
+                        label="Email"
+                        autoComplete="email"
+                        fullWidth
+                        onChange={(event, index, value) => props.onInsertAuthorEmailChange(value)}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        id="affiliation"
+                        name="affiliation"
+                        label="Affiliation"
+                        autoComplete="affiliation"
+                        fullWidth
+                        onChange={(event, index, value) => props.onInsertAuthorAffilicationChange(value)}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        id="citationNumber"
+                        name="citationNumber"
+                        label="Citation number"
+                        autoComplete="citationNumber"
+                        fullWidth
+                        onChange={(event, index, value) => props.onInsertAuthorCitationChange(value)}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                    <TextField
+                        id="hIndex"
+                        name="hIndex"
+                        label="H-Index"
+                        autoComplete="hIndex"
+                        fullWidth
+                        onChange={(event, index, value) => props.onInsertAuthorHChange(value)}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                    <TextField
+                        id="i10Index"
+                        name="i10Index"
+                        label="I10-Index"
+                        autoComplete="i10Index"
+                        fullWidth
+                        onChange={(event, index, value) => props.onInsertAuthorI10Change(value)}
+                    />
+                </Grid>
+            </Grid>
+        </div>
+    );
+}
 
-    render() {
-        return (
-            <div id = "authorInsertFields">
+function PaperInsertForm(props) {
+    return (
+        <div id = "paperInsertFields">
+            <React.Fragment>
                 <Grid container spacing={3} id="InsertForm">
                     <Grid item xs={12}>
                         <TextField
                             required
-                            id="name"
-                            name="name"
-                            label="Name"
-                            autoComplete="name"
+                            id="title"
+                            name="title"
+                            label="Title"
+                            autoComplete="title"
                             fullWidth
-                            onChange={(event, index, value) => this.props.onInsertAuthorNameChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleTitleChange(value)}
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                             required
-                            id="email"
-                            name="email"
-                            label="Email"
-                            autoComplete="email"
+                            id="primaryAuthorName"
+                            name="primaryAuthorName"
+                            label="Primary author name"
+                            autoComplete="authorName"
                             fullWidth
-                            onChange={(event, index, value) => this.props.onInsertAuthorEmailChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleAuthorNameChange(value)}
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                             required
-                            id="affiliation"
-                            name="affiliation"
-                            label="Affiliation"
-                            autoComplete="affiliation"
+                            id="url"
+                            name="url"
+                            label="Url"
+                            autoComplete="url"
                             fullWidth
-                            onChange={(event, index, value) => this.props.onInsertAuthorAffilicationChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleURLChange(value)}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={4}>
                         <TextField
-                            id="citationNumber"
-                            name="citationNumber"
-                            label="Citation number"
-                            autoComplete="citationNumber"
+                            required
+                            id="citedBy"
+                            name="citedBy"
+                            label="Cited by"
+                            autoComplete="citedBy"
                             fullWidth
-                            onChange={(event, index, value) => this.props.onInsertAuthorCitationChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleCitedByChange(value)}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={4}>
                         <TextField
-                            id="hIndex"
-                            name="hIndex"
-                            label="H-Index"
-                            autoComplete="hIndex"
+                            required
+                            id="citations"
+                            name="citations"
+                            label="Citations"
+                            autoComplete="citations"
                             fullWidth
-                            onChange={(event, index, value) => this.props.onInsertAuthorHChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleCitationsChange(value)}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={4}>
                         <TextField
-                            id="i10Index"
-                            name="i10Index"
-                            label="I10-Index"
-                            autoComplete="i10Index"
+                            required
+                            id="year"
+                            name="year"
+                            label="Year"
+                            autoComplete="year"
                             fullWidth
-                            onChange={(event, index, value) => this.props.onInsertAuthorI10Change(value)}
+                            onChange={(event, index, value) => props.onInsertArticleYearChange(value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            required
+                            id="publisher"
+                            name="publisher"
+                            label="Publisher"
+                            autoComplete="publisher"
+                            fullWidth
+                            onChange={(event, index, value) => props.onInsertArticlePublisherChange(value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            required
+                            id="journalName"
+                            name="journalName"
+                            label="Journal name"
+                            autoComplete="journalName"
+                            fullWidth
+                            onChange={(event, index, value) => props.onInsertArticleJournalChange(value)}
                         />
                     </Grid>
                 </Grid>
-            </div>
-        );
-    } 
-}
-
-class PaperInsertForm extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div id = "paperInsertFields">
-                <React.Fragment>
-                    <Grid container spacing={3} id="InsertForm">
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                id="title"
-                                name="title"
-                                label="Title"
-                                autoComplete="title"
-                                fullWidth
-                                onChange={(event, index, value) => this.props.onInsertArticleTitleChange(value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                id="primaryAuthorName"
-                                name="primaryAuthorName"
-                                label="Primary author name"
-                                autoComplete="authorName"
-                                fullWidth
-                                onChange={(event, index, value) => this.props.onInsertArticleAuthorNameChange(value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                id="url"
-                                name="url"
-                                label="Url"
-                                autoComplete="url"
-                                fullWidth
-                                onChange={(event, index, value) => this.props.onInsertArticleURLChange(value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                required
-                                id="citedBy"
-                                name="citedBy"
-                                label="Cited by"
-                                autoComplete="citedBy"
-                                fullWidth
-                                onChange={(event, index, value) => this.props.onInsertArticleCitedByChange(value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                required
-                                id="citations"
-                                name="citations"
-                                label="Citations"
-                                autoComplete="citations"
-                                fullWidth
-                                onChange={(event, index, value) => this.props.onInsertArticleCitationsChange(value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                required
-                                id="year"
-                                name="year"
-                                label="Year"
-                                autoComplete="year"
-                                fullWidth
-                                onChange={(event, index, value) => this.props.onInsertArticleYearChange(value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                id="publisher"
-                                name="publisher"
-                                label="Publisher"
-                                autoComplete="publisher"
-                                fullWidth
-                                onChange={(event, index, value) => this.props.onInsertArticlePublisherChange(value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                required
-                                id="journalName"
-                                name="journalName"
-                                label="Journal name"
-                                autoComplete="journalName"
-                                fullWidth
-                                onChange={(event, index, value) => this.props.onInsertArticleJournalChange(value)}
-                            />
-                        </Grid>
-                    </Grid>
-                </React.Fragment>
-            </div>
-        );
-    }
+            </React.Fragment>
+        </div>
+    );
 }
 
 function TabPanel(props) {
@@ -231,10 +219,10 @@ class InsertForm extends React.Component {
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.props.tab} index={0} >
-                    <PaperInsertForm/>
+                    {PaperInsertForm(this.props)}
                 </TabPanel>
                 <TabPanel value={this.props.tab} index={1}>
-                    <AuthorInsertForm/>
+                    {AuthorInsertForm(this.props)}
                 </TabPanel>
                 <Button id="submitButton" variant="contained" color="primary" onClick={() => this.props.onInsertSubmit()}>
                     Submit

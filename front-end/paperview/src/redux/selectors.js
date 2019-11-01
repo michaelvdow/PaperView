@@ -33,3 +33,59 @@ export const isSnackBarOpen = store => {
 export const getSnackBarMessage = store => {
     return store.snackBarMessage;
 }
+
+export const getArticleTitle = store => {
+    return store.insertArticleTitle;
+}
+
+export const getArticleAuthorName = store => {
+    return store.insertArticleAuthorName;
+}
+
+export const getArticleURL = store => {
+    return store.insertArticleURL;
+}
+
+export const getArticleCitedBy = store => {
+    return store.insertArticleCitedBy;
+}
+
+export const getArticleCitations = store => {
+    return store.insertArticleCitations;
+}
+
+export const getArticleYear = store => {
+    return store.insertArticleYear;
+}
+
+export const getArticelPublisher = store => {
+    return store.insertArticelPublisher;
+}
+
+export const getAritcleJournal = store => {
+    return store.insertAritcleJournal;
+}
+
+export const getAuthorName = store => {
+    return store.insertAuthorName;
+}
+
+export const getAuthorEmail = store => {
+    return store.insertAuthorEmail;
+}
+
+export const getAuthorAffiliation = store => {
+    return store.insertAuthorAffiliation;
+}
+
+export const getAuthorCitation = store => {
+    return store.insertAuthorCitation;
+}
+
+export const getAuthorH = store => {
+    return store.insertAuthorH;
+}
+
+export const getAuthorI10 = store => {
+    return store.insertAuthorI10;
+}

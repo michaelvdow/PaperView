@@ -8,6 +8,8 @@ function *submit() {
     let searchType = yield select(selectors.getSearchType)
     let searchInput = yield select(selectors.getSearchInput)
 
+    console.log(searchInput)
+
     try {
         const searchField = (searchType === Constants.AUTHOR ? "name" : "title")
         const response = yield call(fetch, `${Constants.URL}/search/${searchType}?${searchField}="${searchInput}"`)
@@ -92,7 +94,29 @@ function *deleteRow(action) {
 
 function *insert(action) {
     let insertType = yield select(selectors.getAuthorPaperTab)
-    console.log("GREAT!")
+    console.log("insert type: " + (insertType == 0 ? "article":"author"))
+    if (insertType == 0) {
+        // article
+        let insertArticleTitle = yield select(selectors.getArticleTitle)
+        let insertArticleAuthorName = yield select(selectors.getArticleAuthorName)
+        let insertArticleURL = yield select(selectors.getArticleURL)
+        let insertArticleCitedBy = yield select(selectors.getArticleCitedBy)
+        let insertArticleCitations = yield select(selectors.getArticleCitations)
+        let insertArticleYear = yield select(selectors.getArticleYear)
+        let insertArticlePublisher = yield select(selectors.getArticelPublisher)
+        let insertArticleJournal = yield select(selectors.getAritcleJournal)
+        console.log("article title: " + insertArticleTitle)
+        console.log("article author name: " + insertArticleAuthorName)
+        console.log("article URL: " + insertArticleURL)
+        console.log("article cited by: " + insertArticleCitedBy)
+        console.log("article citations: " + insertArticleCitations)
+        console.log("article year: " + insertArticleYear)
+        console.log("article publisher: " + insertArticlePublisher)
+        console.log("article journal: " + insertArticleJournal)
+    }
+    else {
+        // author
+    }
 }
 
 function *watchUpdateRow() {
@@ -111,7 +135,7 @@ function *watchDeleteRow() {
     yield takeLatest(actionTypes.ON_ROW_DELETE, deleteRow);
 }
 
-function * watchInsert() {
+function *watchInsert() {
     yield takeLatest(actionTypes.ON_INSERT_SUBMIT, insert);
 }
 
@@ -120,7 +144,8 @@ function* rootSaga () {
         watchSubmit(),
         watchDelete(),
         watchUpdateRow(),
-        watchDeleteRow()
+        watchDeleteRow(),
+        watchInsert()
     ])
 }
 
