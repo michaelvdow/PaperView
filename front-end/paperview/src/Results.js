@@ -27,7 +27,6 @@ class Results extends React.Component {
                                 { title: "Author Name", field: "Name" },
                                 { title: "Affiliation", field: "Affiliation" },
                                 { title: "Cited By", field: "CitedBy", type: "numeric" },
-                                { title: "Email", field: "Email" },
                                 { title: "H-Index", field: "HIndex", type: "numeric" },
                                 { title: "I10-Index", field: "I10Index", type: "numeric" }
                             ]:

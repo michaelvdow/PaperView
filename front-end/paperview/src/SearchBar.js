@@ -38,7 +38,7 @@ class SearchBar extends React.Component {
                         id="searchFieldSearch"
                         label="Search"
                         margin="normal"
-                        onChange={(event, index, value) => this.props.onTextChange(value)}
+                        onChange={(event, index, value) => this.props.onTextChange(event.target.value)}
                     />
 
                     <Button id="searchFieldButton" variant="contained" color="primary" onClick={() => this.props.onSubmit()}>
