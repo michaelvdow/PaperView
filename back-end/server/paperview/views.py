@@ -63,7 +63,6 @@ def specific_author(request, authorid):
             cursor.execute("DELETE FROM Author WHERE authorid = %s",
                             [authorid])
             rows = cursor.fetchall()
-            print(rows)
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
     return HttpResponse('stub')
@@ -74,10 +73,17 @@ def specific_article(request, articleid):
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM Article WHERE articleid = %s",
                             [articleid])
-            rows = cursor.fetchall()
-            print(rows)
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
+    elif request.method == "POST":
+        body = json.loads(request.body)
+        print(body)
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, CitedBy = %s, Citations = %s, Title = %s, Year = %s, Url = %s, Publisher = %s, Journal = %s WHERE articleid = %s", 
+            [body['PrimaryAuthorId'], body['CitedBy'], body['Citations'], body['Title'], body['Year'], body['Url'], body['Publisher'], body['Journal'], articleid])
+        response = { 'result': 'SUCCESS'}
+        return JsonResponse(response)
+
     return HttpResponse('stub')
 
 @csrf_exempt
