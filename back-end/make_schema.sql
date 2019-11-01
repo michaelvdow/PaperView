@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Author(
     Name TEXT NOT NULL,
     Affiliation TEXT,
     CitedBy INTEGER,
-    Email TEXT,  # right?
+    #Email TEXT,  # right?
     HIndex INTEGER,
     I10Index INTEGER
 );
