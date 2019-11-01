@@ -141,7 +141,8 @@ function *insert(action) {
                 }
                 const insertResponse = yield call(fetch, `${Constants.URL}/new/article/`, options)
                 console.log(insertResponse)
-                if (insertResponse === Constants.SUCCESS)
+                const insertResponseBody = yield insertResponse.json()
+                if (insertResponseBody.result === Constants.SUCCESS)
                     yield put(actions.launchSnackBar("Insert article success!"))
                 else
                     yield put(actions.launchSnackBar("Fail to insert"))
@@ -181,7 +182,8 @@ function *insert(action) {
                 }
                 const insertResponse = yield call(fetch, `${Constants.URL}/new/author/`, options)
                 console.log(insertResponse)
-                if (insertResponse.result === Constants.SUCCESS)
+                const insertResponseBody = yield insertResponse.json()
+                if (insertResponseBody.result === Constants.SUCCESS)
                     yield put(actions.launchSnackBar("Insert author success!"))
                 else
                     yield put(actions.launchSnackBar("Fail to insert"))
