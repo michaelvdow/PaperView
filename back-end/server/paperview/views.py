@@ -31,7 +31,30 @@ def search_for_author(request):
     return JsonResponse(response)
 
 def search_for_article(request):
-    return HttpResponse('stub')
+    name = request.GET['title']
+    search_string = build_search_string(name)
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM Article WHERE Title LIKE %s LIMIT 20",
+                       [search_string])
+        rows = cursor.fetchall()
+
+    author_list = []
+    for row in rows:
+        author_dict = {
+            'ArticleId': row[0],
+            'PrimaryAuthorId': row[1],
+            'CitedBy': row[2],
+            'Citations': row[3],
+            'Title': row[4],
+            'Year': row[5],
+            'Url': row[6],
+            'Publisher': row[7],
+            'Journal': row[8]
+        }
+        author_list.append(author_dict)
+
+    response = { 'result': 'SUCCESS', 'Articles': author_list }
+    return JsonResponse(response)
 
 @csrf_exempt
 def specific_author(request, authorid):
@@ -45,7 +68,16 @@ def specific_author(request, authorid):
         return JsonResponse(response)
     return HttpResponse('stub')
 
-def specific_article(request):
+@csrf_exempt
+def specific_article(request, articleid):
+    if request.method == "DELETE":
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM Article WHERE articleid = %s",
+                            [articleid])
+            rows = cursor.fetchall()
+            print(rows)
+        response = { 'result': 'SUCCESS'}
+        return JsonResponse(response)
     return HttpResponse('stub')
 
 def new_author(request):
