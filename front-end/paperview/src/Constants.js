@@ -10,5 +10,5 @@ export const AUTHOR = "author"
 export const ARTICLE = "article"
 
 // Django stuff
-export const URL = 'localhost:3066'
+export const URL = 'localhost:3306'
 export const SUCCESS = "SUCCESS"

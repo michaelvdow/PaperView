@@ -9,7 +9,8 @@ function *submit() {
     let searchInput = yield select(selectors.getSearchInput)
 
     try {
-        const response = yield call(fetch, `${Constants.URL}/search/${searchType}?input="${searchInput}"`)
+        const searchField = (searchType === Constants.AUTHOR ? "name" : "title")
+        const response = yield call(fetch, `${Constants.URL}/search/${searchType}?${searchField}="${searchInput}"`)
         const responseBody = response.json()
         if (responseBody.result === Constants.SUCCESS) {
             if (searchType === Constants.ARTICLE) {
