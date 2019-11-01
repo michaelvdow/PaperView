@@ -123,7 +123,7 @@ function *insert(action) {
             console.log(response)
             const responseBody = yield response.json()
             console.log(responseBody.result)
-            if (responseBody.result !== Constants.SUCCESS) {
+            if (responseBody.result !== Constants.SUCCESS || responseBody.Authors.length == 0) {
                 yield put(actions.launchSnackBar("Author name not in database - Check your spelling or insert the author first"))
                 return
             }
