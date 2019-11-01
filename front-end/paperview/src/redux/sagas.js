@@ -120,6 +120,7 @@ function *insert(action) {
             const response = yield call(fetch, `${Constants.URL}/search/author?name=${insertArticleAuthorName}`)
             console.log(response)
             const responseBody = yield response.json()
+            console.log(responseBody.result)
             if (responseBody.result !== Constants.SUCCESS) {
                 yield put(actions.launchSnackBar("Author name not in database - Check your spelling or insert the author first"))
                 return
