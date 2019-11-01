@@ -152,26 +152,26 @@ function *insert(action) {
     else {
         // author
         let insertAuthorName = yield select(selectors.getAuthorName)
-        let insertAuthorEmail = yield select(selectors.getAuthorEmail)
+        //let insertAuthorEmail = yield select(selectors.getAuthorEmail)
         let insertAuthorAffiliation = yield select(selectors.getAuthorAffiliation)
         let insertAuthorCitation = yield select(selectors.getAuthorCitation)
         let insertAuthorH = yield select(selectors.getAuthorH)
         let insertAuthorI10 = yield select(selectors.getAuthorI10)
-        /*
+        
         console.log("author name: " + insertAuthorName)
-        console.log("author email: " + insertAuthorEmail)
+        //console.log("author email: " + insertAuthorEmail)
         console.log("author affiliation: " + insertAuthorAffiliation)
         console.log("author citation number: " + insertAuthorCitation)
         console.log("author H-index: " + insertAuthorH)
         console.log("author i10-index: " + insertAuthorI10)
-        */
+        
         try {
             let options = {
                     method: 'POST',
                     body: JSON.stringify({Name: insertAuthorName,
                                           Affiliation: insertAuthorAffiliation, 
                                           CitedBy: insertAuthorCitation,
-                                          Email: insertAuthorEmail,
+                                        //  Email: insertAuthorEmail,
                                           HIndex: insertAuthorH,
                                           I10index: insertAuthorI10,
                                           Interests: [],
