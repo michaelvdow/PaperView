@@ -30,6 +30,8 @@ function *submit() {
             yield put(actions.launchSnackBar("Failed to find any results"))
         }
     } catch(e) {
+        // TODO: More specific error cases
+        // Specifically, trying to create article w/ nonexistant author
         yield put(actions.launchSnackBar("Could not connect to server"))
     }
 }
@@ -37,8 +39,8 @@ function *submit() {
 function *updateRow(action) {
     let data = yield select(selectors.getSearchData)
     let searchType = yield select(selectors.getSearchType)
-    const dataIndex = data.findIndex(elem => (searchType === Constants.AUTHOR ? elem.authorId === action.oldData.authorId
-        : elem.articleId === action.oldData.articleId))
+    const dataIndex = data.findIndex(elem => (searchType === Constants.AUTHOR ? elem.AuthorId === action.oldData.AuthorId
+        : elem.ArticleId === action.oldData.ArticleId))
     let options = {
         method: 'POST',
         body: JSON.stringify(action.newData)

@@ -58,13 +58,22 @@ def search_for_article(request):
 
 @csrf_exempt
 def specific_author(request, authorid):
-    if request.method == "DELETE": 
+    if request.method == "DELETE":
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM Author WHERE authorid = %s",
                             [authorid])
             rows = cursor.fetchall()
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
+    elif request.method == "POST":
+        body = json.loads(request.body)
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE Author SET AuthorId=%s, Name=%s, Affiliation=%s, CitedBy=%s, "
+                       "HIndex=%s, I10Index=%s WHERE authorid = %s", 
+            [body['AuthorId'], body['Name'], body['Affiliation'], body['CitedBy'], body['HIndex'], body['I10Index'], authorid])
+        response = { 'result': 'SUCCESS'}
+        return JsonResponse(response)
+
     return HttpResponse('stub')
 
 @csrf_exempt
@@ -79,7 +88,7 @@ def specific_article(request, articleid):
         body = json.loads(request.body)
         print(body)
         with connection.cursor() as cursor:
-            cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, CitedBy = %s, Citations = %s, Title = %s, Year = %s, Url = %s, Publisher = %s, Journal = %s WHERE articleid = %s", 
+            cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, CitedBy = %s, Citations = %s, Title = %s, Year = %s, Url = %s, Publisher = %s, Journal = %s WHERE articleid = %s",
             [body['PrimaryAuthorId'], body['CitedBy'], body['Citations'], body['Title'], body['Year'], body['Url'], body['Publisher'], body['Journal'], articleid])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
@@ -88,6 +97,7 @@ def specific_article(request, articleid):
 
 @csrf_exempt
 def new_author(request):
+    #print(request.body)
     author = json.loads(request.body)
     with connection.cursor() as cursor:
         cursor.execute("INSERT INTO Author"
@@ -106,8 +116,27 @@ def new_author(request):
 
 @csrf_exempt
 def new_article(request):
-
-    return HttpResponse('stub')
+    article = json.loads(request.body)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO Article"
+                           "(Title, PrimaryAuthorId, CitedBy, Citations, Year, "
+                           "Url, Publisher, Journal) "
+                           "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                           [
+                               article['Title'],
+                               article['PrimaryAuthorId'],
+                               article['CitedBy'],
+                               article['Citations'],
+                               article['Year'],
+                               article['Url'],
+                               article['Publisher'],
+                               article['Journal']
+                           ])
+    except Exception as e:
+        print(e) # debug
+        return JsonResponse({'result':'FAILURE', 'error': str(e)})
+    return JsonResponse({'result':'SUCCESS'})
 
 def index(request):
     return HttpResponse("This will serve the react page.")
