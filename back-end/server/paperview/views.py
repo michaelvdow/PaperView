@@ -65,6 +65,15 @@ def specific_author(request, authorid):
             rows = cursor.fetchall()
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
+    elif request.method == "POST":
+        body = json.loads(request.body)
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE Author SET AuthorId=%s, Name=%s, Affiliation=%s, CitedBy=%s, "
+                       "HIndex=%s, I10Index=%s WHERE authorid = %s", 
+            [body['AuthorId'], body['Name'], body['Affiliation'], body['CitedBy'], body['HIndex'], body['I10Index'], authorid])
+        response = { 'result': 'SUCCESS'}
+        return JsonResponse(response)
+
     return HttpResponse('stub')
 
 @csrf_exempt

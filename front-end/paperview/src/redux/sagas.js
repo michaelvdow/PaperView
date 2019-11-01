@@ -39,8 +39,8 @@ function *submit() {
 function *updateRow(action) {
     let data = yield select(selectors.getSearchData)
     let searchType = yield select(selectors.getSearchType)
-    const dataIndex = data.findIndex(elem => (searchType === Constants.AUTHOR ? elem.authorId === action.oldData.authorId
-        : elem.articleId === action.oldData.articleId))
+    const dataIndex = data.findIndex(elem => (searchType === Constants.AUTHOR ? elem.AuthorId === action.oldData.AuthorId
+        : elem.ArticleId === action.oldData.ArticleId))
     let options = {
         method: 'POST',
         body: JSON.stringify(action.newData)
