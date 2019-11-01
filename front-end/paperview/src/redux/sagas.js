@@ -181,7 +181,7 @@ function *insert(action) {
                 }
                 const insertResponse = yield call(fetch, `${Constants.URL}/new/author/`, options)
                 console.log(insertResponse)
-                if (insertResponse === Constants.SUCCESS)
+                if (insertResponse.result === Constants.SUCCESS)
                     yield put(actions.launchSnackBar("Insert author success!"))
                 else
                     yield put(actions.launchSnackBar("Fail to insert"))
