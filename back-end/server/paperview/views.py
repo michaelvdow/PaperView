@@ -58,7 +58,7 @@ def search_for_article(request):
 
 @csrf_exempt
 def specific_author(request, authorid):
-    if request.method == "DELETE": 
+    if request.method == "DELETE":
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM Author WHERE authorid = %s",
                             [authorid])
@@ -88,7 +88,7 @@ def specific_article(request, articleid):
         body = json.loads(request.body)
         print(body)
         with connection.cursor() as cursor:
-            cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, CitedBy = %s, Citations = %s, Title = %s, Year = %s, Url = %s, Publisher = %s, Journal = %s WHERE articleid = %s", 
+            cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, CitedBy = %s, Citations = %s, Title = %s, Year = %s, Url = %s, Publisher = %s, Journal = %s WHERE articleid = %s",
             [body['PrimaryAuthorId'], body['CitedBy'], body['Citations'], body['Title'], body['Year'], body['Url'], body['Publisher'], body['Journal'], articleid])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
@@ -97,6 +97,7 @@ def specific_article(request, articleid):
 
 @csrf_exempt
 def new_author(request):
+    #print(request.body)
     author = json.loads(request.body)
     with connection.cursor() as cursor:
         cursor.execute("INSERT INTO Author"
