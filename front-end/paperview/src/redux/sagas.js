@@ -43,10 +43,10 @@ function *updateRow(action) {
         method: 'POST',
         body: JSON.stringify(action.newData)
     }
-    const id = (searchType === Constants.AUTHOR ? action.oldData.authorId : action.oldData.articleId)
+    const id = (searchType === Constants.AUTHOR ? action.oldData.AuthorId : action.oldData.ArticleId)
     try {
         const response = yield call(fetch, `${Constants.URL}/${searchType}/${id}`, options)
-        const responseBody = response.json()
+        const responseBody = yield response.json()
         if (responseBody.result === Constants.SUCCESS) {
             let newTableData = data.map((item, index) => {
                 if (index !== dataIndex) {
@@ -77,10 +77,11 @@ function *deleteRow(action) {
     let options = {
         method: 'DELETE'
     }
-    const id = (searchType === Constants.AUTHOR ? action.oldData.authorId : action.oldData.articleId)
+    const id = (searchType === Constants.AUTHOR ? action.oldData.AuthorId : action.oldData.ArticleId)
+    console.log(action)
     try {
         const response = yield call(fetch, `${Constants.URL}/${searchType}/${id}`, options)
-        const responseBody = response.json()
+        const responseBody = yield response.json()
         if (responseBody.result === Constants.SUCCESS) {
             yield put(actions.onSearchResult(data.filter((elem, index) => index !== dataIndex)))
         } else {
