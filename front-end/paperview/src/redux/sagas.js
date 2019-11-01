@@ -30,6 +30,8 @@ function *submit() {
             yield put(actions.launchSnackBar("Failed to find any results"))
         }
     } catch(e) {
+        // TODO: More specific error cases
+        // Specifically, trying to create article w/ nonexistant author
         yield put(actions.launchSnackBar("Could not connect to server"))
     }
 }

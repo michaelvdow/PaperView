@@ -107,8 +107,27 @@ def new_author(request):
 
 @csrf_exempt
 def new_article(request):
-
-    return HttpResponse('stub')
+    article = json.loads(request.body)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO Article"
+                           "(Title, PrimaryAuthorId, CitedBy, Citations, Year, "
+                           "Url, Publisher, Journal) "
+                           "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                           [
+                               article['Title'],
+                               article['PrimaryAuthorId'],
+                               article['CitedBy'],
+                               article['Citations'],
+                               article['Year'],
+                               article['Url'],
+                               article['Publisher'],
+                               article['Journal']
+                           ])
+    except Exception as e:
+        print(e) # debug
+        return JsonResponse({'result':'FAILURE', 'error': str(e)})
+    return JsonResponse({'result':'SUCCESS'})
 
 def index(request):
     return HttpResponse("This will serve the react page.")
