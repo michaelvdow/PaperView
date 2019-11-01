@@ -7,7 +7,29 @@ import json
 
 # Actual views
 def search_for_author(request):
-    return HttpResponse('stub')
+    name = request.GET['name']
+    search_string = build_search_string(name)
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT AuthorId, Name, Affiliation, CitedBy, Email, "
+                       "HIndex, I10Inddex FROM Author WHERE Name LIKE %s",
+                       [search_string])
+        rows = cursor.fetchall()
+
+    author_list = []
+    for row in rows:
+        author_dict = {
+            'AuthorId': row[0],
+            'Name': row[1],
+            'Affiliation': row[2],
+            'CitedBy': row[3],
+            'Email': row[4],
+            'HIndex': row[5],
+            'I10Index': row[6]
+        }
+        author_list.append(author_dict)
+
+    response = { 'result': 'SUCCESS', 'Authors': author_list }
+    return JsonResponse(response)
 
 def search_for_article(request):
     return HttpResponse('stub')
