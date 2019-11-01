@@ -33,13 +33,23 @@ def search_for_author(request):
 def search_for_article(request):
     return HttpResponse('stub')
 
-def specific_author(request):
+@csrf_exempt
+def specific_author(request, authorid):
+    if request.method == "DELETE": 
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM Author WHERE authorid = %s",
+                            [authorid])
+            rows = cursor.fetchall()
+            print(rows)
+        response = { 'result': 'SUCCESS'}
+        return JsonResponse(response)
     return HttpResponse('stub')
 
 def specific_article(request):
     return HttpResponse('stub')
 
 def new_author(request):
+
     return HttpResponse('stub')
 
 def new_article(request):
