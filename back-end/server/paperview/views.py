@@ -5,8 +5,30 @@ import json
 
 # Create your views here.
 
+# Actual views
+def search_for_author(request):
+    return HttpResponse('stub')
+
+def search_for_article(request):
+    return HttpResponse('stub')
+
+def specific_author(request):
+    return HttpResponse('stub')
+
+def specific_article(request):
+    return HttpResponse('stub')
+
+def new_author(request):
+    return HttpResponse('stub')
+
+def new_article(request):
+    return HttpResponse('stub')
+
 def index(request):
     return HttpResponse("This will serve the react page.")
+
+
+# Test views
 
 def listnames(request):
     with connection.cursor() as cursor:
