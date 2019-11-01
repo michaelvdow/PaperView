@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'paperview.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'TempDB',
+        'NAME': 'googleScholar',
         'USER': 'django',
         'PASSWORD': 'theeggandyou',
         'HOST': '127.0.0.1',
