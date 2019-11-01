@@ -10,7 +10,21 @@ const initialState = {
     mainTab: 0,
     authorPaperTab: 0,
     isSnackBarOpen: false,
-    snackBarMessage: ""
+    snackBarMessage: "",
+    insertArticleTitle: "",
+    insertArticleAuthorName: "",
+    insertArticleURL: "",
+    insertArticleCitedBy: 0,
+    insertArticleCitations: 0,
+    insertArticleYear: 0,
+    insertArticelPublisher: "",
+    insertAritcleJournal: "",
+    insertAuthorName: "",
+    insertAuthorEmail: "",
+    insertAuthorAffiliation: "",
+    insertAuthorCitation: 0,
+    insertAuthorH: 0,
+    insertAuthorI10: 0
 }
 
 function rootReducer(state=initialState, action) {
@@ -35,6 +49,34 @@ function rootReducer(state=initialState, action) {
             }
         case actionTypes.LAUNCH_SNACK_BAR:
             return Object.assign({}, state, {isSnackBarOpen: true, snackBarMessage: action.message})
+        case actionTypes.ON_INSERT_ARTICLE_TITLE:
+            return Object.assign({}, state, {insertArticleTitle: action.input})
+        case actionTypes.ON_INSERT_ARTICLE_AUTHOR_NAME:
+            return Object.assign({}, state, {insertArticleAuthorName: action.input})
+        case actionTypes.ON_INSERT_ARTICLE_URL:
+            return Object.assign({}, state, {insertArticleURL: action.input})
+        case actionTypes.ON_INSERT_ARTICLE_CITED_BY:
+            return Object.assign({}, state, {insertArticleCitedBy: action.input})
+        case actionTypes.ON_INSERT_ARTICLE_CITATIONS:
+            return Object.assign({}, state, {insertArticleCitations: action.input})
+        case actionTypes.ON_INSERT_ARTICLE_YEAR:
+            return Object.assign({}, state, {insertArticleYear: action.input})
+        case actionTypes.ON_INSERT_ARTICLE_PUBLISHER:
+            return Object.assign({}, state, {insertArticelPublisher: action.input})
+        case actionTypes.ON_INSERT_ARTICLE_JOURNAL:
+            return Object.assign({}, state, {insertAritcleJournal: action.input})
+        case actionTypes.ON_INSERT_AUTHOR_NAME:
+            return Object.assign({}, state, {insertAuthorName: action.input})
+        case actionTypes.ON_INSERT_AUTHOR_EMAIL:
+            return Object.assign({}, state, {insertAuthorEmail: action.input})
+        case actionTypes.ON_INSERT_AUTHOR_AFFILIATION:
+            return Object.assign({}, state, {insertAuthorAffiliation: action.input})
+        case actionTypes.ON_INSERT_AUTHOR_CITATION:
+            return Object.assign({}, state, {insertAuthorCitation: action.input})
+        case actionTypes.ON_INSERT_AUTHOR_H:
+            return Object.assign({}, state, {insertAuthorH: action.input})
+        case actionTypes.ON_INSERT_AUTHOR_I10:
+            return Object.assign({}, state, {insertAuthorI10: action.input})
         default:
             return state
     }
