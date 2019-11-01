@@ -27,7 +27,7 @@ function AuthorInsertForm(props) {
                         label="Name"
                         autoComplete="name"
                         fullWidth
-                        onChange={(event, index, value) => props.onInsertAuthorNameChange(value)}
+                        onChange={(event, index, value) => props.onInsertAuthorNameChange(event.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -38,7 +38,7 @@ function AuthorInsertForm(props) {
                         label="Email"
                         autoComplete="email"
                         fullWidth
-                        onChange={(event, index, value) => props.onInsertAuthorEmailChange(value)}
+                        onChange={(event, index, value) => props.onInsertAuthorEmailChange(event.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -49,7 +49,7 @@ function AuthorInsertForm(props) {
                         label="Affiliation"
                         autoComplete="affiliation"
                         fullWidth
-                        onChange={(event, index, value) => props.onInsertAuthorAffilicationChange(value)}
+                        onChange={(event, index, value) => props.onInsertAuthorAffilicationChange(event.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -59,7 +59,7 @@ function AuthorInsertForm(props) {
                         label="Citation number"
                         autoComplete="citationNumber"
                         fullWidth
-                        onChange={(event, index, value) => props.onInsertAuthorCitationChange(value)}
+                        onChange={(event, index, value) => props.onInsertAuthorCitationChange(event.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -69,7 +69,7 @@ function AuthorInsertForm(props) {
                         label="H-Index"
                         autoComplete="hIndex"
                         fullWidth
-                        onChange={(event, index, value) => props.onInsertAuthorHChange(value)}
+                        onChange={(event, index, value) => props.onInsertAuthorHChange(event.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -79,7 +79,7 @@ function AuthorInsertForm(props) {
                         label="I10-Index"
                         autoComplete="i10Index"
                         fullWidth
-                        onChange={(event, index, value) => props.onInsertAuthorI10Change(value)}
+                        onChange={(event, index, value) => props.onInsertAuthorI10Change(event.target.value)}
                     />
                 </Grid>
             </Grid>
@@ -100,7 +100,7 @@ function PaperInsertForm(props) {
                             label="Title"
                             autoComplete="title"
                             fullWidth
-                            onChange={(event, index, value) => props.onInsertArticleTitleChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleTitleChange(event.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -111,7 +111,7 @@ function PaperInsertForm(props) {
                             label="Primary author name"
                             autoComplete="authorName"
                             fullWidth
-                            onChange={(event, index, value) => props.onInsertArticleAuthorNameChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleAuthorNameChange(event.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -122,7 +122,7 @@ function PaperInsertForm(props) {
                             label="Url"
                             autoComplete="url"
                             fullWidth
-                            onChange={(event, index, value) => props.onInsertArticleURLChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleURLChange(event.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -133,7 +133,7 @@ function PaperInsertForm(props) {
                             label="Cited by"
                             autoComplete="citedBy"
                             fullWidth
-                            onChange={(event, index, value) => props.onInsertArticleCitedByChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleCitedByChange(event.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -144,7 +144,7 @@ function PaperInsertForm(props) {
                             label="Citations"
                             autoComplete="citations"
                             fullWidth
-                            onChange={(event, index, value) => props.onInsertArticleCitationsChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleCitationsChange(event.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -155,7 +155,7 @@ function PaperInsertForm(props) {
                             label="Year"
                             autoComplete="year"
                             fullWidth
-                            onChange={(event, index, value) => props.onInsertArticleYearChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleYearChange(event.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -166,7 +166,7 @@ function PaperInsertForm(props) {
                             label="Publisher"
                             autoComplete="publisher"
                             fullWidth
-                            onChange={(event, index, value) => props.onInsertArticlePublisherChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticlePublisherChange(event.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -177,7 +177,7 @@ function PaperInsertForm(props) {
                             label="Journal name"
                             autoComplete="journalName"
                             fullWidth
-                            onChange={(event, index, value) => props.onInsertArticleJournalChange(value)}
+                            onChange={(event, index, value) => props.onInsertArticleJournalChange(event.target.value)}
                         />
                     </Grid>
                 </Grid>

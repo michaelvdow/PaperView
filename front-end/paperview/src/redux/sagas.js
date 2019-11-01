@@ -9,8 +9,6 @@ function *submit() {
     let searchInput = yield select(selectors.getSearchInput)
     console.log(searchInput)
 
-    console.log(searchInput)
-
     try {
         const searchField = (searchType === Constants.AUTHOR ? "name" : "title")
         const response = yield call(fetch, `${Constants.URL}/search/${searchType}?${searchField}=${searchInput}`)
@@ -107,6 +105,7 @@ function *insert(action) {
         let insertArticleYear = yield select(selectors.getArticleYear)
         let insertArticlePublisher = yield select(selectors.getArticelPublisher)
         let insertArticleJournal = yield select(selectors.getAritcleJournal)
+        /*
         console.log("article title: " + insertArticleTitle)
         console.log("article author name: " + insertArticleAuthorName)
         console.log("article URL: " + insertArticleURL)
@@ -115,9 +114,80 @@ function *insert(action) {
         console.log("article year: " + insertArticleYear)
         console.log("article publisher: " + insertArticlePublisher)
         console.log("article journal: " + insertArticleJournal)
+        */
+        try {
+            const response = yield call(fetch, `${Constants.URL}/search/author?name=${insertArticleAuthorName}`)
+            console.log(response)
+            const responseBody = yield response.json()
+            if (responseBody.result !== Constants.SUCCESS) {
+                yield put(actions.launchSnackBar("Author name not in database - Check your spelling or insert the author first"))
+                return
+            }
+            else {
+                let authorID = responseBody.Authors[0].AuthorId;
+                let options = {
+                    method: 'POST',
+                    body: JSON.stringify({Title: insertArticleTitle,
+                                          PrimaryAuthorId: authorID, 
+                                          CitedBy: insertArticleCitedBy,
+                                          Citations: insertArticleCitations,
+                                          Year: insertArticleYear,
+                                          Url: insertArticleURL,
+                                          Publisher: insertArticlePublisher,
+                                          Journal: insertArticleJournal,
+                                          Authors: []
+                                      })
+                }
+                const insertResponse = yield call(fetch, `${Constants.URL}/new/article/`, options)
+                console.log(insertResponse)
+                if (insertResponse === Constants.SUCCESS)
+                    yield put(actions.launchSnackBar("Insert article success!"))
+                else
+                    yield put(actions.launchSnackBar("Fail to insert"))
+            }
+        } catch(e) {
+            yield put(actions.launchSnackBar("Could not connect to server"))
+        }
     }
     else {
         // author
+        let insertAuthorName = yield select(selectors.getAuthorName)
+        let insertAuthorEmail = yield select(selectors.getAuthorEmail)
+        let insertAuthorAffiliation = yield select(selectors.getAuthorAffiliation)
+        let insertAuthorCitation = yield select(selectors.getAuthorCitation)
+        let insertAuthorH = yield select(selectors.getAuthorH)
+        let insertAuthorI10 = yield select(selectors.getAuthorI10)
+        /*
+        console.log("author name: " + insertAuthorName)
+        console.log("author email: " + insertAuthorEmail)
+        console.log("author affiliation: " + insertAuthorAffiliation)
+        console.log("author citation number: " + insertAuthorCitation)
+        console.log("author H-index: " + insertAuthorH)
+        console.log("author i10-index: " + insertAuthorI10)
+        */
+        try {
+            let options = {
+                    method: 'POST',
+                    body: JSON.stringify({Name: insertAuthorName,
+                                          Affiliation: insertAuthorAffiliation, 
+                                          CitedBy: insertAuthorCitation,
+                                          Email: insertAuthorEmail,
+                                          HIndex: insertAuthorH,
+                                          I10index: insertAuthorI10,
+                                          Interests: [],
+                                          YearlyCitations: []
+                                      })
+                }
+                const insertResponse = yield call(fetch, `${Constants.URL}/new/author/`, options)
+                console.log(insertResponse)
+                if (insertResponse === Constants.SUCCESS)
+                    yield put(actions.launchSnackBar("Insert author success!"))
+                else
+                    yield put(actions.launchSnackBar("Fail to insert"))
+        } catch(e) {
+            yield put(actions.launchSnackBar("Could not connect to server"))
+        }
+        
     }
 }
 
