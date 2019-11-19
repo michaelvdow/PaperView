@@ -6,6 +6,7 @@ import json
 # Create your views here.
 
 # Actual views
+@csrf_exempt
 def search_for_author(request):
     name = request.GET['name']
     search_string = build_search_string(name)
@@ -30,6 +31,7 @@ def search_for_author(request):
     response = { 'result': 'SUCCESS', 'Authors': author_list }
     return JsonResponse(response)
 
+@csrf_exempt
 def search_for_article(request):
     name = request.GET['title']
     search_string = build_search_string(name)
@@ -62,7 +64,6 @@ def specific_author(request, authorid):
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM Author WHERE authorid = %s",
                             [authorid])
-            rows = cursor.fetchall()
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
     elif request.method == "POST":
@@ -79,9 +80,11 @@ def specific_author(request, authorid):
 @csrf_exempt
 def specific_article(request, articleid):
     if request.method == "DELETE":
+        print(request.method)
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM Article WHERE articleid = %s",
+            cursor.execute("DELETE FROM Article WHERE ArticleId = %s",
                             [articleid])
+        print("Executed")
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
     elif request.method == "POST":
