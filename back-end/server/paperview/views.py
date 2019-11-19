@@ -56,6 +56,21 @@ def search_for_article(request):
     response = { 'result': 'SUCCESS', 'Articles': author_list }
     return JsonResponse(response)
 
+def search_for_interest(request):
+    interests = request.GET['interests']
+    search_string = build_search_string(interests)
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT Interests FROM Author WHERE %s in Interests",
+                       [search_string])
+        rows = cursor.fetchall()
+
+    interest_list = []
+    for row in rows:
+        interest_list.append(row[0])
+
+    response = { 'result': 'SUCCESS', 'Authors': interest_list }
+    return JsonResponse(response)	
+	
 @csrf_exempt
 def specific_author(request, authorid):
     if request.method == "DELETE":
