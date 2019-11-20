@@ -182,6 +182,13 @@ export const onInsertAuthorI10Change = (input) => {
     }
 }
 
+export const onInsertAuthorInterestChange = (input) => {
+    return {
+        type: actions.ON_INSERT_AUTHOR_INTEREST,
+        input: input
+    }
+}
+
 export const onInsertSubmit = (input) => {
     return {
         type: actions.ON_INSERT_SUBMIT
