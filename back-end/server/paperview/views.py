@@ -63,12 +63,15 @@ def search_for_article(request):
 
 @csrf_exempt	
 def search_for_interest(request):
-    interests = request.GET['interests']
-    search_string = build_search_string(interests)
+    interest = request.GET['interest']
+    search_string = build_search_string(interest)
     with connection.cursor() as cursor:
-        cursor.execute("SELECT AuthorId, Name, Affiliation, CitedBy, "
-                       "HIndex, I10Index FROM Author WHERE %s in Interests",
-                       [search_string])
+        cursor.execute("SELECT AuthorId, Name, MAX(Interest) AS Interest "
+						"FROM Author NATURAL JOIN InterestedIn "
+						"WHERE Interest LIKE %s "
+						"GROUP BY AuthorId "
+						"ORDER BY Name",
+						[search_string])
         rows = cursor.fetchall()
 
     interest_list = []
