@@ -10,7 +10,8 @@ function *submit() {
     console.log(searchInput)
 
     try {
-        const searchField = (searchType === Constants.AUTHOR ? "name" : "title")
+        const searchField = (searchType === Constants.AUTHOR ? "name" : 
+            (searchType === Constants.ARTICLE ? "title" : "interest"))
         const response = yield call(fetch, `${Constants.URL}/search/${searchType}?${searchField}=${searchInput}`)
         console.log(response)
         const responseBody = yield response.json()

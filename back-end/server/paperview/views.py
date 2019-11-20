@@ -123,6 +123,7 @@ def specific_article(request, articleid):
 
 @csrf_exempt
 def new_author(request):
+<<<<<<< HEAD
 	#print(request.body)
 	author = json.loads(request.body)
 	with connection.cursor() as cursor:
@@ -145,6 +146,27 @@ def new_author(request):
 			# and the interest (interest)
 			cursor.execute("INSERT INTO InterestedIn(AuthorId, Interest) VALUES (new_id, interest)")
 
+=======
+    #print(request.body)
+	author = json.loads(request.body)
+	with connection.cursor() as cursor:
+		cursor.execute("INSERT INTO Author"
+                       "(Name, Affiliation, CitedBy, HIndex, I10Index) "
+                       "VALUES (%s, %s, %s, %s, %s)",
+                       [
+                           author['Name'],
+                           author['Affiliation'],
+                           author['CitedBy'],
+                           author['HIndex'],
+                           author['I10Index']
+                       ])
+		cursor.execute("SELECT LAST_INSERT_ID()")
+		new_id = cursor.fetchone()[0] # Integer AuthorId of newly inserted author
+		
+		interests = author['Interests']
+		for interest in interests:
+			cursor.execute("INSERT INTO InterestedIn(AuthorId, Interest) VALUES(%s, %s)", (new_id, interest))
+>>>>>>> 0e5421ef05b1144629564c1ddc4924339182de41
 
 	graph_conn.insert_new_author(new_id, author['Name'])
 	return JsonResponse({'result': 'SUCCESS', 'AuthorId': new_id})
