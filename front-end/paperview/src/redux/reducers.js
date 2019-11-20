@@ -24,7 +24,8 @@ const initialState = {
     insertAuthorAffiliation: "",
     insertAuthorCitation: 0,
     insertAuthorH: 0,
-    insertAuthorI10: 0
+    insertAuthorI10: 0,
+    insertAuthorInterest: ""
 }
 
 function rootReducer(state=initialState, action) {
@@ -36,7 +37,7 @@ function rootReducer(state=initialState, action) {
         case actionTypes.ON_SEARCH_RESULT:
             return Object.assign({}, state, {searchData: action.input})
         case actionTypes.DELETE_ROW:
-            return Object.assign({}, state, {searchData: [...state.searchData.filter((elem, idx) => idx != action.index)]})
+            return Object.assign({}, state, {searchData: [...state.searchData.filter((elem, idx) => idx !== action.index)]})
         case actionTypes.SET_MAIN_TAB:
             return Object.assign({}, state, {mainTab: action.tab})
         case actionTypes.SET_AUTHOR_PAPER_TAB:
@@ -77,6 +78,8 @@ function rootReducer(state=initialState, action) {
             return Object.assign({}, state, {insertAuthorH: action.input})
         case actionTypes.ON_INSERT_AUTHOR_I10:
             return Object.assign({}, state, {insertAuthorI10: action.input})
+        case actionTypes.ON_INSERT_AUTHOR_INTEREST:
+            return Object.assign({}, state, {insertAuthorInterest: action.input})
         default:
             return state
     }

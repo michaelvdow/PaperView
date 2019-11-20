@@ -8,6 +8,7 @@ export const TABS_INSERT = 1;
 
 export const AUTHOR = "author"
 export const ARTICLE = "article"
+export const EXPERT = "interest"
 
 // Django stuff
 export const URL = 'http://127.0.0.1:8000'

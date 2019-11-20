@@ -71,6 +71,16 @@ function AuthorInsertForm(props) {
                         onChange={(event, index, value) => props.onInsertAuthorI10Change(event.target.value)}
                     />
                 </Grid>
+                <Grid item xs={12} sm={12}>
+                    <TextField
+                        id="interest"
+                        name="interest"
+                        label="Interest"
+                        autoComplete="interest"
+                        fullWidth
+                        onChange={(event, index, value) => props.onInsertAuthorInterestChange(event.target.value)}
+                    />
+                </Grid>
             </Grid>
         </div>
     );
@@ -239,6 +249,7 @@ const mapDispatchToProps = dispatch => {
         onInsertAuthorCitationChange: (input) => dispatch(actions.onInsertAuthorCitationChange(input)),
         onInsertAuthorHChange: (input) => dispatch(actions.onInsertAuthorHChange(input)),
         onInsertAuthorI10Change: (input) => dispatch(actions.onInsertAuthorI10Change(input)),
+        onInsertAuthorInterestChange: (input) => dispatch(actions.onInsertAuthorInterestChange(input)),
         onInsertArticleTitleChange: (input) => dispatch(actions.onInsertArticleTitleChange(input)),
         onInsertArticleAuthorNameChange: (input) => dispatch(actions.onInsertArticleAuthorNameChange(input)),
         onInsertArticleURLChange: (input) => dispatch(actions.onInsertArticleURLChange(input)),

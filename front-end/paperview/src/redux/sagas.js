@@ -10,7 +10,8 @@ function *submit() {
     console.log(searchInput)
 
     try {
-        const searchField = (searchType === Constants.AUTHOR ? "name" : "title")
+        const searchField = (searchType === Constants.AUTHOR ? "name" : 
+            (searchType === Constants.ARTICLE ? "title" : "interest"))
         const response = yield call(fetch, `${Constants.URL}/search/${searchType}?${searchField}=${searchInput}`)
         console.log(response)
         const responseBody = yield response.json()
@@ -97,8 +98,8 @@ function *deleteRow(action) {
 
 function *insert(action) {
     let insertType = yield select(selectors.getAuthorPaperTab)
-    console.log("insert type: " + (insertType == 0 ? "article":"author"))
-    if (insertType == 0) {
+    console.log("insert type: " + (insertType === 0 ? "article":"author"))
+    if (insertType === 0) {
         // article
         let insertArticleTitle = yield select(selectors.getArticleTitle)
         let insertArticleAuthorName = yield select(selectors.getArticleAuthorName)
@@ -123,7 +124,7 @@ function *insert(action) {
             console.log(response)
             const responseBody = yield response.json()
             console.log(responseBody.result)
-            if (responseBody.result !== Constants.SUCCESS || responseBody.Authors.length == 0) {
+            if (responseBody.result !== Constants.SUCCESS || responseBody.Authors.length === 0) {
                 yield put(actions.launchSnackBar("Author name not in database - Check your spelling or insert the author first"))
                 return
             }
@@ -165,6 +166,9 @@ function *insert(action) {
         let insertAuthorCitation = yield select(selectors.getAuthorCitation)
         let insertAuthorH = yield select(selectors.getAuthorH)
         let insertAuthorI10 = yield select(selectors.getAuthorI10)
+        let insertAuthorInterest = yield select(selectors.getAuthorInterest)
+        var insertAuthorInterestList = insertAuthorInterest.split(",");
+
         
         console.log("author name: " + insertAuthorName)
         //console.log("author email: " + insertAuthorEmail)
@@ -172,6 +176,8 @@ function *insert(action) {
         console.log("author citation number: " + insertAuthorCitation)
         console.log("author H-index: " + insertAuthorH)
         console.log("author i10-index: " + insertAuthorI10)
+        console.log("author interest: " + insertAuthorInterest)
+        console.log("first interest: " + insertAuthorInterestList[0])
         
         try {
             let options = {
@@ -182,7 +188,7 @@ function *insert(action) {
                                         //  Email: insertAuthorEmail,
                                           HIndex: insertAuthorH,
                                           I10Index: insertAuthorI10,
-                                          Interests: [],
+                                          Interests: insertAuthorInterestList,
                                           YearlyCitations: []
                                       })
                 }

@@ -31,6 +31,7 @@ class SearchBar extends React.Component {
                             >
                             <MenuItem value={Constants.AUTHOR}>Author</MenuItem>
                             <MenuItem value={Constants.ARTICLE}>Article</MenuItem>
+                            <MenuItem value={Constants.EXPERT}>Expert</MenuItem>
                         </Select>
                     </FormControl>
 
