@@ -147,7 +147,7 @@ def new_author(request):
         for interest in interests:
             # Insert a new row into InterestedIn with the author ID (new_id)
             # and the interest (interest)
-            cursor.execute("INSERT INTO InterestedIn(AuthorId, Interest) VALUES (new_id, interest)")
+            cursor.execute("INSERT INTO InterestedIn(AuthorId, Interest) VALUES (%s, %s)", [new_id, interest])
 
 
     graph_conn.insert_new_author(new_id, author['Name'])
