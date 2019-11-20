@@ -97,8 +97,8 @@ function *deleteRow(action) {
 
 function *insert(action) {
     let insertType = yield select(selectors.getAuthorPaperTab)
-    console.log("insert type: " + (insertType == 0 ? "article":"author"))
-    if (insertType == 0) {
+    console.log("insert type: " + (insertType === 0 ? "article":"author"))
+    if (insertType === 0) {
         // article
         let insertArticleTitle = yield select(selectors.getArticleTitle)
         let insertArticleAuthorName = yield select(selectors.getArticleAuthorName)
@@ -123,7 +123,7 @@ function *insert(action) {
             console.log(response)
             const responseBody = yield response.json()
             console.log(responseBody.result)
-            if (responseBody.result !== Constants.SUCCESS || responseBody.Authors.length == 0) {
+            if (responseBody.result !== Constants.SUCCESS || responseBody.Authors.length === 0) {
                 yield put(actions.launchSnackBar("Author name not in database - Check your spelling or insert the author first"))
                 return
             }

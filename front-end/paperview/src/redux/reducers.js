@@ -37,7 +37,7 @@ function rootReducer(state=initialState, action) {
         case actionTypes.ON_SEARCH_RESULT:
             return Object.assign({}, state, {searchData: action.input})
         case actionTypes.DELETE_ROW:
-            return Object.assign({}, state, {searchData: [...state.searchData.filter((elem, idx) => idx != action.index)]})
+            return Object.assign({}, state, {searchData: [...state.searchData.filter((elem, idx) => idx !== action.index)]})
         case actionTypes.SET_MAIN_TAB:
             return Object.assign({}, state, {mainTab: action.tab})
         case actionTypes.SET_AUTHOR_PAPER_TAB:
