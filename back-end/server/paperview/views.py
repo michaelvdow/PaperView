@@ -76,6 +76,7 @@ def search_for_interest(request):
 
 	interest_list = []
 	for row in rows:
+        # TODO: make a proper author dictionary as above
 		interest_list.append(row[0])
 
 	response = { 'result': 'SUCCESS', 'Authors': interest_list }
@@ -98,7 +99,7 @@ def specific_author(request, authorid):
             [body['AuthorId'], body['Name'], body['Affiliation'], body['CitedBy'], body['HIndex'], body['I10Index'], authorid])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
-
+# TODO: write method for GET (i.e. specific author page)
     return HttpResponse('stub')
 
 @csrf_exempt
@@ -121,6 +122,7 @@ def specific_article(request, articleid):
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
 
+# TODO: write method for GET (i.e. specific article page)
     return HttpResponse('stub')
 
 @csrf_exempt
