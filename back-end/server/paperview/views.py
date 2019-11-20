@@ -60,7 +60,8 @@ def search_for_interest(request):
     interests = request.GET['interests']
     search_string = build_search_string(interests)
     with connection.cursor() as cursor:
-        cursor.execute("SELECT Interests FROM Author WHERE %s in Interests",
+        cursor.execute("SELECT AuthorId, Name, Affiliation, CitedBy, "
+                       "HIndex, I10Index FROM Author WHERE %s in Interests",
                        [search_string])
         rows = cursor.fetchall()
 
