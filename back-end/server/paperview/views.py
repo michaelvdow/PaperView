@@ -137,6 +137,7 @@ def new_author(request):
         new_id = cursor.fetchone()[0]
         #rows = cursor.fetchall()
         #print(rows)
+    graph_conn.insert_new_author(new_id, author['Name'])
     return JsonResponse({'result': 'SUCCESS', 'id': new_id})
 
 @csrf_exempt

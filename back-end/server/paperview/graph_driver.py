@@ -11,6 +11,18 @@ class Neo4jConnector(object):
     def close(self):
         self._driver.close()
 
+    def insert_new_author(self, AuthorId, Name):
+        with self._driver.session() as session:
+            return session.write_transaction(self._insert_author_query, AuthorId, Name)
+
+
+
+    @staticmethod
+    def _insert_author_query(tx, AuthorId, Name):
+        result = tx.run("CREATE (a:Author) "
+                        "SET a.AuthorId = $AuthorId "
+                        "SET a.Name = $Name ",
+                        AuthorId=AuthorId, Name=Name)
 
     ## Test methods
 
