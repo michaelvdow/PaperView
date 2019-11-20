@@ -21,15 +21,7 @@ class Results extends React.Component {
                             search: false
                         }}
                         columns={
-                            this.props.searchType === Constants.AUTHOR ? 
-                            [
-                                { title: "Author ID", field: "AuthorId", type: "numeric", editable: 'never' },
-                                { title: "Author Name", field: "Name" },
-                                { title: "Affiliation", field: "Affiliation" },
-                                { title: "Cited By", field: "CitedBy", type: "numeric" },
-                                { title: "H-Index", field: "HIndex", type: "numeric" },
-                                { title: "I10-Index", field: "I10Index", type: "numeric" }
-                            ]:
+                            this.props.searchType === Constants.ARTICLE ?
                             [
                                 { title: "Article ID", field: "ArticleId", type: "numeric", editable: 'never' },
                                 { title: "Title", field: "Title" },
@@ -41,12 +33,21 @@ class Results extends React.Component {
                                 { title: "Publisher", field: "Publisher" },
                                 { title: "Journal", field: "Journal" },
                                 { title: "URL", field: "Url" }
+                            ]:
+                            [
+                                { title: "Author ID", field: "AuthorId", type: "numeric", editable: 'never' },
+                                { title: "Author Name", field: "Name" },
+                                { title: "Affiliation", field: "Affiliation" },
+                                { title: "Cited By", field: "CitedBy", type: "numeric" },
+                                { title: "H-Index", field: "HIndex", type: "numeric" },
+                                { title: "I10-Index", field: "I10Index", type: "numeric" },
                             ]
                         }
                         data={
                             this.props.detailsData
                         }
-                        title={this.props.searchType === Constants.AUTHOR ? "Author Details" : "Article Details"}
+                        title={this.props.searchType === Constants.AUTHOR ? "Author Details" : 
+                            (this.props.searchType === Constants.ARTICLE ? "Article Details" : "Expert Details")}
                         editable={{
                             onRowUpdate: (newData, oldData) =>
                               new Promise((resolve, reject) => {
