@@ -66,7 +66,7 @@ def search_for_interest(request):
     interest = request.GET['interest']
     search_string = build_search_string(interest)
     with connection.cursor() as cursor:
-        cursor.execute("SELECT AuthorId, Name, MAX(Interest) AS Interest "
+        cursor.execute(	"SELECT AuthorId, Name, MAX(Interest) AS Interest "
 						"FROM Author NATURAL JOIN InterestedIn "
 						"WHERE Interest LIKE %s "
 						"GROUP BY AuthorId "
