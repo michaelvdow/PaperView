@@ -61,6 +61,7 @@ def search_for_article(request):
     response = { 'result': 'SUCCESS', 'Articles': author_list }
     return JsonResponse(response)
 
+@csrf_exempt	
 def search_for_interest(request):
     interests = request.GET['interests']
     search_string = build_search_string(interests)
