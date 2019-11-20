@@ -92,6 +92,7 @@ def specific_author(request, authorid):
     elif request.method == "POST":
         body = json.loads(request.body)
         with connection.cursor() as cursor:
+            # TODO: should not be able to update id
             cursor.execute("UPDATE Author SET AuthorId=%s, Name=%s, Affiliation=%s, CitedBy=%s, "
                        "HIndex=%s, I10Index=%s WHERE authorid = %s",
             [body['AuthorId'], body['Name'], body['Affiliation'], body['CitedBy'], body['HIndex'], body['I10Index'], authorid])
@@ -114,6 +115,7 @@ def specific_article(request, articleid):
         body = json.loads(request.body)
         print(body)
         with connection.cursor() as cursor:
+            # TODO: should not be able to update id
             cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, CitedBy = %s, Citations = %s, Title = %s, Year = %s, Url = %s, Publisher = %s, Journal = %s WHERE articleid = %s",
             [body['PrimaryAuthorId'], body['CitedBy'], body['Citations'], body['Title'], body['Year'], body['Url'], body['Publisher'], body['Journal'], articleid])
         response = { 'result': 'SUCCESS'}
@@ -170,6 +172,7 @@ def new_article(request):
                            ])
             cursor.execute("SELECT LAST_INSERT_ID()")
             new_id = cursor.fetchone()[0]
+        graph_conn.insert_new_article(new_id, article['Title'], article['Authors'])
     except Exception as e:
         print(e) # debug
         return JsonResponse({'result':'FAILURE', 'error': str(e)})
