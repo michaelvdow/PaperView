@@ -165,6 +165,9 @@ function *insert(action) {
         let insertAuthorCitation = yield select(selectors.getAuthorCitation)
         let insertAuthorH = yield select(selectors.getAuthorH)
         let insertAuthorI10 = yield select(selectors.getAuthorI10)
+        let insertAuthorInterest = yield select(selectors.getAuthorInterest)
+        var insertAuthorInterestList = insertAuthorInterest.split(",");
+
         
         console.log("author name: " + insertAuthorName)
         //console.log("author email: " + insertAuthorEmail)
@@ -172,6 +175,8 @@ function *insert(action) {
         console.log("author citation number: " + insertAuthorCitation)
         console.log("author H-index: " + insertAuthorH)
         console.log("author i10-index: " + insertAuthorI10)
+        console.log("author interest: " + insertAuthorInterest)
+        console.log("first interest: " + insertAuthorInterestList[0])
         
         try {
             let options = {
@@ -182,7 +187,7 @@ function *insert(action) {
                                         //  Email: insertAuthorEmail,
                                           HIndex: insertAuthorH,
                                           I10Index: insertAuthorI10,
-                                          Interests: [],
+                                          Interests: insertAuthorInterestList,
                                           YearlyCitations: []
                                       })
                 }
