@@ -20,11 +20,15 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),   # Don't touch this, pregenerated
     path('', views.index, name='index'),
+
+    # Test paths, delete these eventually
     path('listnames/', views.listnames, name='listnames'),
     path('echopostdata/', views.echopostdata, name='echopostdata'),
     path('tothelimit/', views.tothelimit, name='tothelimit'),
     path('addname/', views.addname, name='addname'),
     path('search/test/', views.searchForName, name='search_test'),
+    path('graphtest', views.graphTest, name='Graph test'),
+    # End of test paths
 
     path('search/author', views.search_for_author, name = 'search_for_author'),
     path('search/article', views.search_for_article, name = 'search_for_article'),

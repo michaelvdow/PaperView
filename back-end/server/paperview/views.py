@@ -2,6 +2,9 @@ from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 import json
+from . import graph_driver
+
+graph_conn = graph_driver.Neo4jConnector()
 
 # Create your views here.
 
@@ -113,9 +116,11 @@ def new_author(request):
                            author['HIndex'],
                            author['I10Index']
                        ])
-        rows = cursor.fetchall()
-        print(rows)
-    return JsonResponse({'result':'SUCCESS'})
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        new_id = cursor.fetchone()[0]
+        #rows = cursor.fetchall()
+        #print(rows)
+    return JsonResponse({'result': 'SUCCESS', 'id': new_id})
 
 @csrf_exempt
 def new_article(request):
@@ -136,16 +141,23 @@ def new_article(request):
                                article['Publisher'],
                                article['Journal']
                            ])
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            new_id = cursor.fetchone()[0]
     except Exception as e:
         print(e) # debug
         return JsonResponse({'result':'FAILURE', 'error': str(e)})
-    return JsonResponse({'result':'SUCCESS'})
+    return JsonResponse({'result': 'SUCCESS', 'id': new_id})
 
 def index(request):
     return HttpResponse("This will serve the react page.")
 
 
 # Test views
+
+def graphTest(request):
+    #graph_conn.print_greeting(request.GET['message'])
+    result = graph_conn.return_greeting(request.GET['message'])
+    return HttpResponse(result)
 
 def listnames(request):
     with connection.cursor() as cursor:
