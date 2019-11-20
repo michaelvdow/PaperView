@@ -32,7 +32,8 @@ urlpatterns = [
 
     path('search/author', views.search_for_author, name = 'search_for_author'),
     path('search/article', views.search_for_article, name = 'search_for_article'),
-    path('author/<int:authorid>', views.specific_author, name = 'specific_author'),
+    path('search/interest', views.search_for_interest, name = 'search_for_interest'),
+	path('author/<int:authorid>', views.specific_author, name = 'specific_author'),
     path('article/<int:articleid>', views.specific_article, name = 'specific_article'),
     path('new/author/', views.new_author, name = 'new_author'),
     path('new/article/', views.new_article, name = 'new_article'),
