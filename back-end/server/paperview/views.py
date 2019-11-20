@@ -61,7 +61,7 @@ def search_for_article(request):
     response = { 'result': 'SUCCESS', 'Articles': author_list }
     return JsonResponse(response)
 
-@csrf_exempt	
+@csrf_exempt
 def search_for_interest(request):
     interest = request.GET['interest']
     search_string = build_search_string(interest)
@@ -79,8 +79,8 @@ def search_for_interest(request):
         interest_list.append(row[0])
 
     response = { 'result': 'SUCCESS', 'Authors': interest_list }
-    return JsonResponse(response)	
-	
+    return JsonResponse(response)
+
 @csrf_exempt
 def specific_author(request, authorid):
     if request.method == "DELETE":
@@ -93,7 +93,7 @@ def specific_author(request, authorid):
         body = json.loads(request.body)
         with connection.cursor() as cursor:
             cursor.execute("UPDATE Author SET AuthorId=%s, Name=%s, Affiliation=%s, CitedBy=%s, "
-                       "HIndex=%s, I10Index=%s WHERE authorid = %s", 
+                       "HIndex=%s, I10Index=%s WHERE authorid = %s",
             [body['AuthorId'], body['Name'], body['Affiliation'], body['CitedBy'], body['HIndex'], body['I10Index'], authorid])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
@@ -137,11 +137,17 @@ def new_author(request):
                            author['I10Index']
                        ])
         cursor.execute("SELECT LAST_INSERT_ID()")
-        new_id = cursor.fetchone()[0]
-        #rows = cursor.fetchall()
-        #print(rows)
+        new_id = cursor.fetchone()[0] # Integer AuthorId of newly inserted author
+
+        interests = author['Interests'] # array of strings
+        for interest in interests:
+            # Insert a new row into InterestedIn with the author ID (new_id)
+            # and the interest (interest)
+            pass
+
+
     graph_conn.insert_new_author(new_id, author['Name'])
-    return JsonResponse({'result': 'SUCCESS', 'id': new_id})
+    return JsonResponse({'result': 'SUCCESS', 'AuthorId': new_id})
 
 @csrf_exempt
 def new_article(request):
@@ -167,7 +173,7 @@ def new_article(request):
     except Exception as e:
         print(e) # debug
         return JsonResponse({'result':'FAILURE', 'error': str(e)})
-    return JsonResponse({'result': 'SUCCESS', 'id': new_id})
+    return JsonResponse({'result': 'SUCCESS', 'ArticleId': new_id})
 
 def index(request):
     return HttpResponse("This will serve the react page.")
