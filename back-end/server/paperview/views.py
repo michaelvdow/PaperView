@@ -2,10 +2,14 @@ from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 import json
+from . import graph_driver
+
+graph_conn = graph_driver.Neo4jConnector()
 
 # Create your views here.
 
 # Actual views
+@csrf_exempt
 def search_for_author(request):
     name = request.GET['name']
     search_string = build_search_string(name)
@@ -30,6 +34,7 @@ def search_for_author(request):
     response = { 'result': 'SUCCESS', 'Authors': author_list }
     return JsonResponse(response)
 
+@csrf_exempt
 def search_for_article(request):
     name = request.GET['title']
     search_string = build_search_string(name)
@@ -78,7 +83,6 @@ def specific_author(request, authorid):
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM Author WHERE authorid = %s",
                             [authorid])
-            rows = cursor.fetchall()
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
     elif request.method == "POST":
@@ -95,9 +99,11 @@ def specific_author(request, authorid):
 @csrf_exempt
 def specific_article(request, articleid):
     if request.method == "DELETE":
+        print(request.method)
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM Article WHERE articleid = %s",
+            cursor.execute("DELETE FROM Article WHERE ArticleId = %s",
                             [articleid])
+        print("Executed")
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
     elif request.method == "POST":
@@ -126,9 +132,11 @@ def new_author(request):
                            author['HIndex'],
                            author['I10Index']
                        ])
-        rows = cursor.fetchall()
-        print(rows)
-    return JsonResponse({'result':'SUCCESS'})
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        new_id = cursor.fetchone()[0]
+        #rows = cursor.fetchall()
+        #print(rows)
+    return JsonResponse({'result': 'SUCCESS', 'id': new_id})
 
 @csrf_exempt
 def new_article(request):
@@ -149,16 +157,23 @@ def new_article(request):
                                article['Publisher'],
                                article['Journal']
                            ])
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            new_id = cursor.fetchone()[0]
     except Exception as e:
         print(e) # debug
         return JsonResponse({'result':'FAILURE', 'error': str(e)})
-    return JsonResponse({'result':'SUCCESS'})
+    return JsonResponse({'result': 'SUCCESS', 'id': new_id})
 
 def index(request):
     return HttpResponse("This will serve the react page.")
 
 
 # Test views
+
+def graphTest(request):
+    #graph_conn.print_greeting(request.GET['message'])
+    result = graph_conn.return_greeting(request.GET['message'])
+    return HttpResponse(result)
 
 def listnames(request):
     with connection.cursor() as cursor:
