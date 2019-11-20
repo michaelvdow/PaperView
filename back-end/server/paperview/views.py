@@ -141,9 +141,9 @@ def new_author(request):
 
         interests = author['Interests'] # array of strings
         for interest in interests:
-            # Insert a new row into InterestedIn with the author ID (new_id)
+			# Insert a new row into InterestedIn with the author ID (new_id)
             # and the interest (interest)
-            pass
+			cursor.execute("INSERT INTO InterestedIn(AuthorId, Interest) VALUES (new_id, interest)")
 
 
     graph_conn.insert_new_author(new_id, author['Name'])
