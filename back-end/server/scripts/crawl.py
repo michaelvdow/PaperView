@@ -28,11 +28,13 @@ from selenium.webdriver.common.by import By
 ARCHIVE_NAMES = ['astro-ph', 'cond-mat', 'cs', 'econ', 'eess', 'gr-qc', 'hep-ex', 'hep-lat', 'hep-ph', 'hep-th', 'math', 'math-ph', 'nlin', 'nucl-ex', 'nucl-th', 'physics', 'q-bio', 'q-fin', 'quant-ph', 'stat']
 URL_NAME = 'http://export.arxiv.org/rss/'
 
+# Returns title: String
 def getTitle(entry):
     title = entry['title']
     title = title[:title.rfind("(")-1]
     return title
 
+# Returns author: String
 def getAuthors(entry):
     authors = entry['authors'][0]['name']
     soup = BeautifulSoup(authors, 'html.parser')
@@ -42,15 +44,19 @@ def getAuthors(entry):
         texts.append(author.getText())
     return texts
 
+# Returns link: String
 def getLink(entry):
     return entry['link']
 
+# Returns abstract: String
 def getAbstract(entry):
     summary = entry['summary']
     soup = BeautifulSoup(summary, 'html.parser')
     abstract = soup.findAll(text=True)[0]
     return abstract
 
+# Returns [citations, references]
+# where citations, references = [{authors: [authorId, name, url], title: String, url: String, year: Int}]
 def getCitationsAndReferences(articleId):
     semanticResults = getSemanticScholarCitations(articleId)
     prophyResults = getProphyCitations(articleId)
@@ -78,6 +84,10 @@ def getProphyCitations(articleId):
     citations = result['citations']
     references = result['references']
     return [citations, references]
+
+def getYear(link):
+    page = requests.get(link)
+    # TODO
 
 def getAuthorInfo(articleId, driver):
     url = 'https://www.prophy.science/api/arxiv/{}?include_unknown_references=1'
@@ -115,28 +125,35 @@ def getAuthorInfo(articleId, driver):
         authorResults.append({'name': name, 'affiliation': affiliation, 'hIndex': hIndex, 'interests': interests})
     return authorResults
 
-def insertArticle(title, authors, link, abstract, citations):
+# Input:
+# title: String
+# authors: [{name: String, affiliation: String, hIndex: Integer, interests: [interest: string]}]
+# link: String
+# citations = [citations, references]
+# where citations, references = [{authors: [authorId, name, url], title: String, url: String, year: Int}]
+def insertArticle(title, authors, link, citations):
     # ArticleId, PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal
     # Author (AuthorId, Name, Affiliation, CitedBy, Email, h-index, i10-index)
      with connection.cursor() as cursor:
         #  ArticleId, PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal
         cursor.execute("INSERT INTO Article (PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal) Values (%s, %s, %s, %s, %s, %s, %s, %s)",
-                       [PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal])
+                       [PrimaryAuthorId, CitedBy, Citations, title, Year, Url, Publisher, Journal])
 
 def run():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(chrome_options=chrome_options)
 
-    feed = feedparser.parse(URL_NAME + 'econ')
+    feed = feedparser.parse(URL_NAME + 'cs')
     numEntries = len(feed['entries'])
-    entry = feed['entries'][numEntries-1]
+    entry = feed['entries'][numEntries-5]
 
     # Get article info
     title = getTitle(entry)
     authorNames = getAuthors(entry)
     link = getLink(entry)
-    abstract = getAbstract(entry)
+    year = getYear(link)
+    # abstract = getAbstract(entry)
 
     articleId = entry['id']
     articleId = articleId[articleId.rfind("/")+1:]
@@ -144,5 +161,5 @@ def run():
     
     # Get author info
     authorInfo = getAuthorInfo(articleId, driver)
-    print(authorInfo)
-    insertArticle(title, authorInfo, link, abstract, citations)
+    # print(authorInfo)
+    # insertArticle(title, authorInfo, link, citations)
