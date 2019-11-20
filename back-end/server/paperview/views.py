@@ -138,7 +138,7 @@ def new_author(request):
         #rows = cursor.fetchall()
         #print(rows)
     graph_conn.insert_new_author(new_id, author['Name'])
-    return JsonResponse({'result': 'SUCCESS', 'id': new_id})
+    return JsonResponse({'result': 'SUCCESS', 'AuthorId': new_id})
 
 @csrf_exempt
 def new_article(request):
@@ -164,7 +164,7 @@ def new_article(request):
     except Exception as e:
         print(e) # debug
         return JsonResponse({'result':'FAILURE', 'error': str(e)})
-    return JsonResponse({'result': 'SUCCESS', 'id': new_id})
+    return JsonResponse({'result': 'SUCCESS', 'ArticleId': new_id})
 
 def index(request):
     return HttpResponse("This will serve the react page.")

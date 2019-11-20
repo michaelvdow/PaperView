@@ -15,7 +15,10 @@ class Neo4jConnector(object):
         with self._driver.session() as session:
             return session.write_transaction(self._insert_author_query, AuthorId, Name)
 
-
+    def insert_new_article(self, ArticleId, Title):
+        with self._driver.session() as session:
+            return session.write_transaction(self._insert_article_query,
+                                             ArticleId, Title)
 
     @staticmethod
     def _insert_author_query(tx, AuthorId, Name):
@@ -23,6 +26,12 @@ class Neo4jConnector(object):
                         "SET a.AuthorId = $AuthorId "
                         "SET a.Name = $Name ",
                         AuthorId=AuthorId, Name=Name)
+
+    def _insert_article_query(tx, ArticleId, Title):
+        result = tx.run("CREATE (a:Article) "
+                        "SET a.ArticleId = $ArticleId "
+                        "SET a.Title = $Title ",
+                        ArticleId=ArticleId, Title=Title)
 
     ## Test methods
 
