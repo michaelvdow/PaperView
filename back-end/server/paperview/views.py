@@ -137,9 +137,15 @@ def new_author(request):
                            author['I10Index']
                        ])
         cursor.execute("SELECT LAST_INSERT_ID()")
-        new_id = cursor.fetchone()[0]
-        #rows = cursor.fetchall()
-        #print(rows)
+        new_id = cursor.fetchone()[0] # Integer AuthorId of newly inserted author
+
+        interests = author['Interests'] # array of strings
+        for interest in interests:
+            # Insert a new row into InterestedIn with the author ID (new_id)
+            # and the interest (interest)
+            pass
+
+
     graph_conn.insert_new_author(new_id, author['Name'])
     return JsonResponse({'result': 'SUCCESS', 'AuthorId': new_id})
 
