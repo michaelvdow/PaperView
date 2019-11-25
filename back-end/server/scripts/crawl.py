@@ -57,6 +57,8 @@ def getAbstract(entry):
 
 # Returns [citations, references]
 # where citations, references = [{authors: [authorId, name, url], title: String, url: String, year: Int}]
+# References = publications referenced by this paper
+# Citations = publications citing this paper
 def getCitationsAndReferences(articleId):
     semanticResults = getSemanticScholarCitations(articleId)
     prophyResults = getProphyCitations(articleId)
@@ -69,32 +71,49 @@ def getCitationsAndReferences(articleId):
 def getSemanticScholarCitations(articleId):
     url = 'https://api.semanticscholar.org/v1/paper/arXiv:{}?include_unknown_references=true'
     url = url.format(articleId)
-    page = requests.get(url)
-    result = page.json()
-    citations = result['citations']
-    references = result['references']
-    return [citations, references]
+    try:
+        page = requests.get(url)
+        result = page.json()
+        citations = result['citations']
+        references = result['references']
+        return [citations, references]
+    except:
+        return [[], []]
 
 # Returns both citations and references
 def getProphyCitations(articleId):
     url = 'https://www.prophy.science/api/arxiv/{}?include_unknown_references=1'
     url = url.format(articleId)
-    page = requests.get(url)
-    result = page.json()
-    citations = result['citations']
-    references = result['references']
-    return [citations, references]
+    try:
+        page = requests.get(url)
+        result = page.json()
+        citations = result['citations']
+        references = result['references']
+        return [citations, references]
+    except:
+        return [[], []]
 
-def getYear(link):
-    page = requests.get(link)
-    # TODO
+def getYear(articleId):
+    url = 'https://www.prophy.science/api/arxiv/{}?include_unknown_references=1'
+    url = url.format(articleId)
+    try:
+        page = requests.get(url)
+        result = page.json()
+        year = result['year']
+        return year
+    except:
+        return None
+    
 
 def getAuthorInfo(articleId, driver):
     url = 'https://www.prophy.science/api/arxiv/{}?include_unknown_references=1'
     url = url.format(articleId)
     page = requests.get(url)
-    result = page.json()
-    authors = result['authors']
+    try:
+        result = page.json()
+        authors = result['authors']
+    except:
+        authors = []
     authorResults = []
     for author in authors:
         url = author['url'] + "/full"
@@ -111,19 +130,111 @@ def getAuthorInfo(articleId, driver):
         # Extract information from page
         name = soup.find('div', {'class': 'author'}).find('span').text
 
-        affiliation = soup.find('ul', {'class': 'affiliations'}).find('li').text
-        affiliation = affiliation[:affiliation.find(',')]
+        affiliation = None
+        try:
+            affiliation = soup.find('ul', {'class': 'affiliations'}).find('li').text
+            affiliation = affiliation[:affiliation.find(',')]
+        except:
+            pass
 
-        hIndex = soup.find('h4', {'title': 'for our collection'}).text
-        hIndex = hIndex[hIndex.find(':') + 2:]
-
-        interestsTable = soup.find('div', {'class': 'top-concepts-chart'}).findAll('tr')
+        hIndex = None
+        try:
+            hIndex = soup.find('h4', {'title': 'for our collection'}).text
+            hIndex = hIndex[hIndex.find(':') + 2:]
+        except:
+            pass
+        
         interests = []
-        for tr in interestsTable:
-            interests.append(tr.find('td').text)
+        try: 
+            interestsTable = soup.find('div', {'class': 'top-concepts-chart'}).findAll('tr')
+            interests = []
+            for tr in interestsTable:
+                interests.append(tr.find('td').text)
+        except:
+            pass
 
         authorResults.append({'name': name, 'affiliation': affiliation, 'hIndex': hIndex, 'interests': interests})
     return authorResults
+
+# Returns None if not found
+def findAuthor(name, affiliation):
+    cursor.execute("SELECT AuthorId, Name FROM Author WHERE Name = %s AND Affiliation LIKE %s", [name, '%' + affiliation + '%']) # TODO: maybe use fuzzy matching to find author? affiliation can be worded different
+    row = cursor.fetchone()
+    authorId = row[0] if len(row) > 0 else None
+    return authorId
+
+# Return None if not found
+def findArticle(title):
+    cursor.execute("SELECT Title FROM Article WHERE Title = %s", [title])
+    row = cursor.fetchone()
+    articleId = row[0] if len(row) > 0 else None
+    return articleId
+
+# Input:
+# authors: [{name: String, affiliation: String, hIndex: Integer, interests: [interest: string]}]
+# Returns primary author id
+def insertAuthors(authors):
+    primaryAuthorId = None
+    with connection.cursor() as cursor:
+        for author in authors:
+            # Check if author exists:
+            currentAuthorId = findAuthor(name, affiliation)
+            if currentAuthorId != None:
+                primaryAuthorId = currentAuthorId if primaryAuthorId == None else primaryAuthorId
+            else: # Author does not exists in database
+                cursor.execute("INSERT INTO Author (Name, Affiliation, CitedBy, HIndex, I10Index) VALUES (%s, %s, %s, %s, %s)", 
+                                [author['name'], author['affiliation'] or None, None, author['hIndex'] or None, None])
+                cursor.execute("SELECT LAST_INSERT_ID()")
+                new_id = cursor.fetchone()[0]
+                currentAuthorId = new_id
+                primaryAuthorId = new_id if primaryAuthorId == None else primaryAuthorId
+            # Insert interests
+            if interests in author:
+                for interest in author['interests']:
+                    if interest != '':
+                        cursor.execute("INSERT IGNORE INTO InterestedIn VALUES (%s, %s)", [currentAuthorId, interest])
+    return primaryAuthorId
+
+# TODO: Find journal or publisher
+def insertArticle(title, primaryAuthorId, link, citations, year):
+    with connection.cursor() as cursor:
+        cursor.execute("INSERT INTO Article (PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
+        [primaryAuthorId, len(citations[0]), len(citations[1]), title, year, link, None, None])
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        new_id = cursor.fetchone()[0]
+        return new_id
+
+# Input:
+# ArticleId, citations = [citations, references]
+# References = publications referenced by this paper
+# Citations = publications citing this paper
+def insertCitations(articleId, citations):
+    pprint.pprint(citations)
+    with connection.cursor() as cursor:
+        for citation in citations[1]: # Articles referenced by this paper
+            otherArticleId = None
+            # Check if article exists
+            result = findArticle(citations['title'])
+            if result == None:
+                primaryAuthorId = insertAuthors(citations['authors'])
+                otherArticleId = insertArticle(citation['title'], primaryAuthorId, citation['url'], None, citation['year'])
+            else:
+                otherArticleId = result[0]
+            cursor.execute("INSERT IGNORE INTO Citation (Article, Cites) VALUES (%s, %s)",
+            [articleId, otherArticleId])
+
+        for citation in citations[0]: # Other articles that cited this paper
+            otherArticleId = None
+            # Check if article exists
+            result = findArticle(citations['title'])
+            if result == None:
+                primaryAuthorId = insertAuthors(citations['authors'])
+                otherArticleId = insertArticle(citation['title'], primaryAuthorId, citation['url'], None, citation['year'])
+            else:
+                otherArticleId = result[0]
+            cursor.execute("INSERT IGNORE INTO Citation (Article, Cites) VALUES (%s, %s)",
+            [otherArticleId, articleId])
+    print("Citations Added")
 
 # Input:
 # title: String
@@ -131,35 +242,37 @@ def getAuthorInfo(articleId, driver):
 # link: String
 # citations = [citations, references]
 # where citations, references = [{authors: [authorId, name, url], title: String, url: String, year: Int}]
-def insertArticle(title, authors, link, citations):
-    # ArticleId, PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal
-    # Author (AuthorId, Name, Affiliation, CitedBy, Email, h-index, i10-index)
-     with connection.cursor() as cursor:
-        #  ArticleId, PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal
-        cursor.execute("INSERT INTO Article (PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal) Values (%s, %s, %s, %s, %s, %s, %s, %s)",
-                       [PrimaryAuthorId, CitedBy, Citations, title, Year, Url, Publisher, Journal])
+def insertEntries(title, authors, link, citations, year):
+    primaryAuthorId = insertAuthors(authors)
+    articleId = insertArticle(title, primaryAuthorId, link, citations, year)
+    insertCitations(articleId, citations)
 
 def run():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(chrome_options=chrome_options)
+    driver = webdriver.Chrome('/Users/michaelvdow/Documents/chromedriver', chrome_options=chrome_options) # Update to chromedriver path
 
     feed = feedparser.parse(URL_NAME + 'cs')
     numEntries = len(feed['entries'])
-    entry = feed['entries'][numEntries-5]
+    print(numEntries)
+    # entry = feed['entries'][numEntries-5]
+    for entry in feed['entries']:
+        # Get article info
+        title = getTitle(entry)
+        authorNames = getAuthors(entry)
+        link = getLink(entry)
 
-    # Get article info
-    title = getTitle(entry)
-    authorNames = getAuthors(entry)
-    link = getLink(entry)
-    year = getYear(link)
-    # abstract = getAbstract(entry)
+        articleId = entry['id']
+        articleId = articleId[articleId.rfind("/")+1:]
+        citations = getCitationsAndReferences(articleId)
+        year = getYear(articleId)
+        # Get author info
+        authorInfo = getAuthorInfo(articleId, driver)
 
-    articleId = entry['id']
-    articleId = articleId[articleId.rfind("/")+1:]
-    citations = getCitationsAndReferences(articleId)
-    
-    # Get author info
-    authorInfo = getAuthorInfo(articleId, driver)
-    # print(authorInfo)
-    # insertArticle(title, authorInfo, link, citations)
+        # print(title)
+        print(authorNames)
+        # print(link)
+        pprint.pprint(authorInfo)
+        # print(year)
+        # print('\n\n\n\n')
+        insertEntries(title, authorInfo, link, citations, year)
