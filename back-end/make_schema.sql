@@ -46,3 +46,19 @@ CREATE TABLE IF NOT EXISTS YearlyCitations(
     PRIMARY KEY (AuthorId, Year),
     FOREIGN KEY (AuthorID) REFERENCES Author(AuthorId)
 );
+
+DELIMITER //
+CREATE TRIGGER CitationUpdate
+AFTER INSERT ON Citation FOR EACH ROW
+BEGIN
+    DECLARE citedAuthorId INTEGER;
+    
+	SET @citedAuthorId = (SELECT PrimaryAuthorId FROM Article WHERE ArticleId = NEW.Cites);
+	
+    UPDATE Article SET Citations = Citations + 1 WHERE ArticleId = NEW.Article;
+    UPDATE Article SET CitedBy = CitedBy + 1 WHERE ArticleId = NEW.Cites;
+
+    UPDATE Author SET CitedBy = CitedBy + 1 WHERE AuthorId = citedAuthorId;
+
+END//
+DELIMITER ;
