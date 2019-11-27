@@ -26,6 +26,19 @@ class Neo4jConnector(object):
                 session.write_transaction(self._create_wrote_relation,
                                           ArticleId, AuthorId, i)
 
+    def delete_author(self, AuthorId):
+        pass #stub, TODO write this
+
+    def delete_article(self, ArticleId):
+        pass #stub TODO write this
+
+    def update_author_name(self, AuthorId, new_name):
+        pass #stub TODO write this
+
+    def update_article_title(self, ArticleId, new_title):
+        pass #stub TODO write this
+
+
     @staticmethod
     def _create_id_constraints(tx):
         tx.run("CREATE CONSTRAINT ON (a:Author) ASSERT a.AuthorId IS UNIQUE")
@@ -51,6 +64,12 @@ class Neo4jConnector(object):
                         "MATCH (wri:Author {AuthorId: $AuthorId}) "
                         "CREATE (wri)-[:Wrote {rank: $rank}]->(art)",
                         ArticleId=ArticleId, AuthorId=AuthorId, rank=rank)
+
+    def _update_author_name_query(tx, AuthorId, new_name):
+        pass # TODO write this fn
+
+    def _update_article_title_query(tx, AuthorId, new_name):
+        pass # TODO write this fn
 
     ## Test methods
 

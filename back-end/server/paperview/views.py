@@ -84,19 +84,23 @@ def search_for_interest(request):
 
 @csrf_exempt
 def specific_author(request, authorid):
-    if request.method == "DELETE":
+    if request.method == "DELETE":   # delete author
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM Author WHERE authorid = %s",
                             [authorid])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
-    elif request.method == "POST":
+    elif request.method == "POST":   # update author
         body = json.loads(request.body)
         with connection.cursor() as cursor:
             # TODO: should not be able to update id
-            cursor.execute("UPDATE Author SET AuthorId=%s, Name=%s, Affiliation=%s, CitedBy=%s, "
-                       "HIndex=%s, I10Index=%s WHERE authorid = %s",
-            [body['AuthorId'], body['Name'], body['Affiliation'], body['CitedBy'], body['HIndex'], body['I10Index'], authorid])
+            cursor.execute("UPDATE Author SET AuthorId=%s, Name=%s, "
+                           "Affiliation=%s, CitedBy=%s, HIndex=%s, I10Index=%s "
+                           "WHERE authorid = %s",
+                           [body['AuthorId'], body['Name'], body['Affiliation'],
+                            body['CitedBy'], body['HIndex'], body['I10Index'],
+                            authorid])
+        graph_conn.update_author_name(authorid, body['name'])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
 # TODO: write method for GET (i.e. specific author page)
@@ -104,7 +108,7 @@ def specific_author(request, authorid):
 
 @csrf_exempt
 def specific_article(request, articleid):
-    if request.method == "DELETE":
+    if request.method == "DELETE":  # Delete article
         print(request.method)
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM Article WHERE ArticleId = %s",
@@ -112,13 +116,21 @@ def specific_article(request, articleid):
         print("Executed")
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
-    elif request.method == "POST":
+    elif request.method == "POST":   # Update article
         body = json.loads(request.body)
         print(body)
         with connection.cursor() as cursor:
-            # TODO: should not be able to update id
-            cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, CitedBy = %s, Citations = %s, Title = %s, Year = %s, Url = %s, Publisher = %s, Journal = %s WHERE articleid = %s",
-            [body['PrimaryAuthorId'], body['CitedBy'], body['Citations'], body['Title'], body['Year'], body['Url'], body['Publisher'], body['Journal'], articleid])
+            # TODO: should not be able to update ArticleId
+            cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, "
+                           "CitedBy = %s, Citations = %s, Title = %s, "
+                           "Year = %s, Url = %s, Publisher = %s, Journal = %s "
+                           "WHERE articleid = %s",
+                           [body['PrimaryAuthorId'], body['CitedBy'],
+                            body['Citations'], body['Title'], body['Year'],
+                            body['Url'], body['Publisher'], body['Journal'],
+                            articleid])
+
+        graph_conn.update_article_title(articleid, body['Title'])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
 
