@@ -26,17 +26,25 @@ class Neo4jConnector(object):
                 session.write_transaction(self._create_wrote_relation,
                                           ArticleId, AuthorId, i)
 
+    # For deletions, need to:
+    # 1. Delete all relations connected to the specified node
+    # 2. Delete the specified node
+
     def delete_author(self, AuthorId):
-        pass #stub, TODO write this
+        pass # TODO write this function
 
     def delete_article(self, ArticleId):
-        pass #stub TODO write this
+        pass # TODO write this function
 
     def update_author_name(self, AuthorId, new_name):
-        pass #stub TODO write this
+        with self._driver.session() as session:
+            session.write_transaction(self._update_author_name_query,
+                                      AuthorId, new_name)
 
     def update_article_title(self, ArticleId, new_title):
-        pass #stub TODO write this
+        with self._driver.session() as session:
+            session.write_transaction(self._update_article_title_query,
+                                      ArticleId, new_title)
 
 
     @staticmethod
@@ -65,11 +73,17 @@ class Neo4jConnector(object):
                         "CREATE (wri)-[:Wrote {rank: $rank}]->(art)",
                         ArticleId=ArticleId, AuthorId=AuthorId, rank=rank)
 
+    @staticmethod
     def _update_author_name_query(tx, AuthorId, new_name):
-        pass # TODO write this fn
+        result = tx.run("MATCH (a:Author {AuthorId: $AuthorId}) "
+                        "SET a.Name = $Name",
+                        AuthorId=AuthorId, Name=new_name)
 
-    def _update_article_title_query(tx, AuthorId, new_name):
-        pass # TODO write this fn
+    @staticmethod
+    def _update_article_title_query(tx, ArticleId, new_title):
+        result = tx.run("MATCH (a:Article {ArticleId: $ArticleId}) "
+                        "SET a.Title = $Title",
+                        ArticleId=ArticleId, Title=new_title)
 
     ## Test methods
 

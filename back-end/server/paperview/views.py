@@ -6,6 +6,11 @@ from . import graph_driver
 
 graph_conn = graph_driver.Neo4jConnector()
 
+# was going to use these but didn't, might be useful so I'm leaving them here
+AUTHOR_ATTRIBUTES = ['Name', 'Affiliation', 'CitedBy', 'HIndex', 'I10Index']
+ARTICLE_ATTRIBUTES = ['ArticleId', 'PrimaryAuthorId', 'CitedBy', 'Citations',
+                      'Title', 'Year', 'Url', 'Publisher', 'Journal']
+
 # Create your views here.
 
 # Actual views
@@ -93,14 +98,12 @@ def specific_author(request, authorid):
     elif request.method == "POST":   # update author
         body = json.loads(request.body)
         with connection.cursor() as cursor:
-            # TODO: should not be able to update id
-            cursor.execute("UPDATE Author SET AuthorId=%s, Name=%s, "
+            cursor.execute("UPDATE Author SET Name=%s, "
                            "Affiliation=%s, CitedBy=%s, HIndex=%s, I10Index=%s "
                            "WHERE authorid = %s",
-                           [body['AuthorId'], body['Name'], body['Affiliation'],
-                            body['CitedBy'], body['HIndex'], body['I10Index'],
-                            authorid])
-        graph_conn.update_author_name(authorid, body['name'])
+                           [body['Name'], body['Affiliation'], body['CitedBy'],
+                            body['HIndex'], body['I10Index'], authorid])
+        graph_conn.update_author_name(authorid, body['Name'])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
 # TODO: write method for GET (i.e. specific author page)
@@ -120,7 +123,6 @@ def specific_article(request, articleid):
         body = json.loads(request.body)
         print(body)
         with connection.cursor() as cursor:
-            # TODO: should not be able to update ArticleId
             cursor.execute("UPDATE Article SET PrimaryAuthorId = %s, "
                            "CitedBy = %s, Citations = %s, Title = %s, "
                            "Year = %s, Url = %s, Publisher = %s, Journal = %s "
