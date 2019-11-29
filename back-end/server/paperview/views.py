@@ -37,10 +37,10 @@ def search_for_author(request):
 @csrf_exempt
 def search_for_article(request):
     name = request.GET['title']
-    search_string = build_search_string(name)
+    search_string = buildArticleSearch(name)
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM Article WHERE Title LIKE %s LIMIT 20",
-                       [search_string])
+        cursor.execute("SELECT * FROM Article WHERE MATCH(Title) AGAINST(%s IN NATURAL LANGUAGE MODE) LIMIT 100",
+                       [name])
         rows = cursor.fetchall()
 
     author_list = []
@@ -238,3 +238,6 @@ def build_search_string(typed_input):
     search_string = '%'.join(search_string.split('.'))
     search_string = '%' + search_string + '%'
     return search_string
+
+def buildArticleSearch(input):
+    return ','.join(input.split(' '))
