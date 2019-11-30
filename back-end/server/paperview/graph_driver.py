@@ -26,6 +26,13 @@ class Neo4jConnector(object):
                 session.write_transaction(self._create_wrote_relation,
                                           ArticleId, AuthorId, i)
 
+    def insert_new_article_with_citations(self, ArticleId, Title, writers, citations):
+        insert_new_author(ArticleId, Title, writers)
+
+        for source in citations:
+            session.write_transaction(self._create_cites_relation,
+                                      ArticleId, source)
+
     # For deletions, need to:
     # 1. Delete all relations connected to the specified node
     # 2. Delete the specified node
@@ -72,6 +79,13 @@ class Neo4jConnector(object):
                         "MATCH (wri:Author {AuthorId: $AuthorId}) "
                         "CREATE (wri)-[:Wrote {rank: $rank}]->(art)",
                         ArticleId=ArticleId, AuthorId=AuthorId, rank=rank)
+
+    @staticmethod
+    def _create_cites_relation(tx, CitedBy, Source):
+        result = tx.run("MATCH (citer:Article {ArticleId: $CitedBy}) "
+                        "MATCH (source:Article {ArticleId: $Source}) "
+                        "CREATE (citer)-[:Cites]->(source)",
+                        CitedBy=CitedBy, Source=Source)
 
     @staticmethod
     def _update_author_name_query(tx, AuthorId, new_name):
