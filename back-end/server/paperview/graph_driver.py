@@ -33,15 +33,14 @@ class Neo4jConnector(object):
             session.write_transaction(self._create_cites_relation,
                                       ArticleId, source)
 
-    # For deletions, need to:
-    # 1. Delete all relations connected to the specified node
-    # 2. Delete the specified node
-
     def delete_author(self, AuthorId):
-        pass # TODO write this function
+        with self._driver.session() as session:
+            session.write_transaction(self._delete_author_query, AuthorId)
 
     def delete_article(self, ArticleId):
-        pass # TODO write this function
+        with self._driver.session() as session:
+            session.write_transaction(self._delete_article_query, ArticleId)
+
 
     def update_author_name(self, AuthorId, new_name):
         with self._driver.session() as session:
@@ -52,6 +51,11 @@ class Neo4jConnector(object):
         with self._driver.session() as session:
             session.write_transaction(self._update_article_title_query,
                                       ArticleId, new_title)
+
+    #def update_relations(self, AuthorId, new_name):
+    #    with self._driver.session() as session:
+    #        session.write_transaction(self._update_author_name_query,
+    #                                  AuthorId, new_name)
 
 
     @staticmethod
@@ -86,6 +90,18 @@ class Neo4jConnector(object):
                         "MATCH (source:Article {ArticleId: $Source}) "
                         "CREATE (citer)-[:Cites]->(source)",
                         CitedBy=CitedBy, Source=Source)
+
+    @staticmethod
+    def _delete_author_query(tx, AuthorId):
+        result = tx.run("MATCH (deletedAuthor:Author {AuthorId: $AuthorId}) "
+                        "DETACH DELETE deletedAuthor",
+                        AuthorId=AuthorId)
+
+    @staticmethod
+    def _delete_article_query(tx, ArticleId):
+        result = tx.run("MATCH (deletedArticle:Article {ArticleId: $ArticleId}) "
+                        "DETACH DELETE deletedArticle",
+                        ArticleId=ArticleId)
 
     @staticmethod
     def _update_author_name_query(tx, AuthorId, new_name):
