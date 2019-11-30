@@ -27,11 +27,12 @@ class Neo4jConnector(object):
                                           ArticleId, AuthorId, i)
 
     def insert_new_article_with_citations(self, ArticleId, Title, writers, citations):
-        insert_new_author(ArticleId, Title, writers)
+        self.insert_new_article(ArticleId, Title, writers)
 
-        for source in citations:
-            session.write_transaction(self._create_cites_relation,
-                                      ArticleId, source)
+        with self._driver.session() as session:
+            for source in citations:
+                session.write_transaction(self._create_cites_relation,
+                                          ArticleId, source)
 
     # For deletions, need to:
     # 1. Delete all relations connected to the specified node
