@@ -53,6 +53,12 @@ class Neo4jConnector(object):
             session.write_transaction(self._update_article_title_query,
                                       ArticleId, new_title)
 
+
+    #def update_relations(self, Wrote, Cites):
+    #    with self._driver.session() as session:
+    #        session.write_transaction(self._update_article_title_query,
+    #                                  ArticleId, new_title)
+
     @staticmethod
     def _create_id_constraints(tx):
         tx.run("CREATE CONSTRAINT ON (a:Author) ASSERT a.AuthorId IS UNIQUE")
