@@ -71,15 +71,13 @@ class Neo4jConnector(object):
 
     @staticmethod
     def _insert_author_query(tx, AuthorId, Name):
-        result = tx.run("CREATE (a:Author) "
-                        "SET a.AuthorId = $AuthorId "
+        result = tx.run("MERGE (a:Author {AuthorId: $AuthorId}) "
                         "SET a.Name = $Name ",
                         AuthorId=AuthorId, Name=Name)
 
     @staticmethod
     def _insert_article_query(tx, ArticleId, Title):
-        result = tx.run("CREATE (a:Article) "
-                        "SET a.ArticleId = $ArticleId "
+        result = tx.run("MERGE (a:Article {ArticleId: $ArticleId}) "
                         "SET a.Title = $Title ",
                         ArticleId=ArticleId, Title=Title)
 
