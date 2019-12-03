@@ -19,6 +19,8 @@ from django.db import connection
 from time import sleep
 import logging
 import sys
+from paperview import graph_driver
+import traceback
 
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
@@ -206,9 +208,10 @@ def findArticle(title, primaryAuthorId):
 # Input:
 # authors: [{name: String, affiliation: String, hIndex: Integer, interests: [interest: string]}]
 # Returns primary author id
-def insertAuthors(authors):
+def insertAuthors(authors, graphConn):
     logging.info("Inside insertAuthors")
     primaryAuthorId = None
+    writers = []
     with connection.cursor() as cursor:
         for author in authors:
             # Check if author exists:
@@ -229,25 +232,61 @@ def insertAuthors(authors):
                 for interest in author['interests']:
                     if interest != '':
                         cursor.execute("INSERT IGNORE INTO InterestedIn VALUES (%s, %s)", [currentAuthorId, interest])
+            writers.append(currentAuthorId)
+            try:
+                graphConn.insert_new_author(currentAuthorId, author['name'])
+            except:
+                pass
     logging.info("Finished insertAuthors")
-    return primaryAuthorId
+    return primaryAuthorId, writers
 
 # TODO: Find journal or publisher
-def insertArticle(title, primaryAuthorId, link, year):
+def insertArticle(title, primaryAuthorId, link, year, writers, graphConn):
     logging.info("Inside insertArticle")
     with connection.cursor() as cursor:
         cursor.execute("INSERT INTO Article (PrimaryAuthorId, CitedBy, Citations, Title, Year, Url, Publisher, Journal) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
         [primaryAuthorId, 0, 0, title, year, link, None, None])
         cursor.execute("SELECT LAST_INSERT_ID()")
         new_id = cursor.fetchone()[0]
+        try:
+            graphConn.insert_new_article(new_id, title, writers)
+        except:
+            pass
         logging.info("Finished insertArticle")
         return new_id
+
+def insertCitationGraph(graphConn, articleId, sourceId):
+    logging.info("Inside insertCitationGraph")
+    # Insert first article and primary author
+    with connection.cursor() as cursor:
+        try:
+            innerCur.execute("SELECT Title, PrimaryAuthorId FROM Article WHERE articleId = %s", [articleId])
+            articleInfo = innerCur.fetchone()
+            innerCur.execute("SELECT Name FROM Author WHERE authorId = %s", [articleInfo[1]])
+            authorName = innerCur.fetchone()[0]
+            graphConn.insert_new_author(articleInfo[1], authorName)
+            graphConn.insert_new_article(articleId, articleInfo[0], [articleInfo[1]])
+        except:
+            pass
+        # Insert second article and primary author
+        try:
+            innerCur.execute("SELECT Title, PrimaryAuthorId FROM Article WHERE articleId = %s", [sourceId])
+            articleInfo = innerCur.fetchone()
+            innerCur.execute("SELECT Name FROM Author WHERE authorId = %s", [articleInfo[1]])
+            authorName = innerCur.fetchone()[0]
+            graphConn.insert_new_author(articleInfo[1], authorName)
+            graphConn.insert_new_article(sourceId, articleInfo[0], [articleInfo[1]])
+        except:
+            pass
+
+        graphConn.insert_citation_relation(articleId, sourceId)
+    logging.info("Finished insertCitationGraph")
 
 # Input:
 # ArticleId, citations = [citations, references]
 # References = publications referenced by this paper
 # Citations = publications citing this paper
-def insertCitations(articleId, citations):
+def insertCitations(articleId, citations, graphConn):
     logging.info("Inside insertCitations")
     with connection.cursor() as cursor:
         for citation in citations[1]: # Articles referenced by this paper
@@ -255,27 +294,29 @@ def insertCitations(articleId, citations):
                 continue
             otherArticleId = None
             # Check if article exists
-            primaryAuthorId = insertAuthors(citation['authors'])
+            primaryAuthorId, writers = insertAuthors(citation['authors'], graphConn)
             result = findArticle(citation['title'], primaryAuthorId)
             if result == None:
-                otherArticleId = insertArticle(citation['title'], primaryAuthorId, citation['url'], citation['year'])
+                otherArticleId = insertArticle(citation['title'], primaryAuthorId, citation['url'], citation['year'], writers, graphConn)
             else:
                 otherArticleId = result[0]
             cursor.execute("INSERT IGNORE INTO Citation (Article, Cites) VALUES (%s, %s)",
             [articleId, otherArticleId])
+            insertCitationGraph(graphConn, articleId, otherArticleId)
         for citation in citations[0]: # Other articles that cited this paper
             if citation['title'] == None:
                 continue
             otherArticleId = None
             # Check if article exists
-            primaryAuthorId = insertAuthors(citation['authors'])
+            primaryAuthorId, writers = insertAuthors(citation['authors'], graphConn)
             result = findArticle(citation['title'], primaryAuthorId)
             if result == None:
-                otherArticleId = insertArticle(citation['title'], primaryAuthorId, citation['url'], citation['year'])
+                otherArticleId = insertArticle(citation['title'], primaryAuthorId, citation['url'], citation['year'], writers, graphConn)
             else:
                 otherArticleId = result[0]
             cursor.execute("INSERT IGNORE INTO Citation (Article, Cites) VALUES (%s, %s)",
             [otherArticleId, articleId])
+            insertCitationGraph(graphConn, articleId, otherArticleId)
     logging.info("Finished insertCitations")
 
 # Input:
@@ -284,48 +325,53 @@ def insertCitations(articleId, citations):
 # link: String
 # citations = [citations, references]
 # where citations, references = [{authors: [authorId, name, url], title: String, url: String, year: Int}]
-def insertEntries(title, authors, link, citations, year):
+def insertEntries(title, authors, link, citations, year, graphConn):
     logging.info("Inside insertEntries")
-    primaryAuthorId = insertAuthors(authors)
-    articleId = insertArticle(title, primaryAuthorId, link, year)
-    insertCitations(articleId, citations)
+    primaryAuthorId, writers = insertAuthors(authors, graphConn)
+    articleId = insertArticle(title, primaryAuthorId, link, year, writers, graphConn)
+    insertCitations(articleId, citations, graphConn)
     logging.info("Finished insertEntries")
 
 def run():
-    logging.basicConfig(level=logging.ERROR, filemode='w', filename="crawlLog.log", format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.DEBUG, filemode='w', filename="crawlLog.log", format='%(name)s - %(levelname)s - %(message)s')
     logging.info("Inside of run")
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     driver = webdriver.Chrome('/Users/michaelvdow/Documents/chromedriver', chrome_options=chrome_options) # Update to chromedriver path
 
     # feed = feedparser.parse(URL_NAME + 'cs')
-    feed = feedparser.parse('http://web.archive.org/web/20191115025945/http://export.arxiv.org/rss/cs')
-    numEntries = len(feed['entries'])
-    logging.info("Number of entries: " + str(numEntries))
+    # feed = feedparser.parse('http://web.archive.org/web/20191115025945/http://export.arxiv.org/rss/cs')
+    # numEntries = len(feed['entries'])
+    # logging.info("Number of entries: " + str(numEntries))
+    graphConn = graph_driver.Neo4jConnector()
+
     # entry = feed['entries'][numEntries-5]
-    # for archive in
-    i = 1
-    for entry in feed['entries']:
-        if i < 247:
+    for archive in ARCHIVE_NAMES:
+        print(archive)
+        feed = feedparser.parse(URL_NAME + 'cs')
+        numEntries = len(feed['entries'])
+        logging.info("Number of entries: " + str(numEntries))
+        i = 1
+        for entry in feed['entries']:
+            # Get article info
+            try:
+                title = getTitle(entry)
+                authorNames = getAuthors(entry)
+                link = getLink(entry)
+
+                articleId = entry['id']
+                articleId = articleId[articleId.rfind("/")+1:]
+                citations = getCitationsAndReferences(articleId)
+                year = getYear(articleId)
+                authorInfo = getAuthorInfo(articleId, driver)
+
+                insertEntries(title, authorInfo, link, citations, year, graphConn)
+            except KeyboardInterrupt:
+                sys.exit()
+            except Exception as e:
+                print(e)
+                print(traceback.format_exc())
+                logging.info("Failed to insert entry {}: {}".format(i, entry['title']))
+            print("Finished entry {}/{}".format(i, numEntries))
             i += 1
-            continue
-        # Get article info
-        try:
-            title = getTitle(entry)
-            authorNames = getAuthors(entry)
-            link = getLink(entry)
-
-            articleId = entry['id']
-            articleId = articleId[articleId.rfind("/")+1:]
-            citations = getCitationsAndReferences(articleId)
-            year = getYear(articleId)
-            authorInfo = getAuthorInfo(articleId, driver)
-
-            insertEntries(title, authorInfo, link, citations, year)
-        except KeyboardInterrupt:
-            sys.exit()
-        except:
-            logging.info("Failed to insert entry {}: {}".format(i, entry['title']))
-        print("Finished entry {}/{}".format(i, numEntries))
-        i += 1
     logging.info("Finished run")

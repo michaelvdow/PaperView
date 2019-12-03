@@ -99,7 +99,7 @@ def search_for_interest(request):
 def specific_author(request, authorid):
     if request.method == "DELETE":   # delete author
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM Author WHERE authorid = %s",
+            cursor.execute("DELETE FROM Author WHERE AuthorId = %s",
                             [authorid])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
