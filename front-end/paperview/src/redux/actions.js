@@ -194,3 +194,9 @@ export const onInsertSubmit = (input) => {
         type: actions.ON_INSERT_SUBMIT
     }
 }
+
+export const onGotoDetailPage = (input) => {
+    return {
+        type: actions.ON_GOTO_DETAILED_PAGE
+    }
+}

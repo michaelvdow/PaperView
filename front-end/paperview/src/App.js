@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import SearchBar from './SearchBar.js'
 import InsertForm from './Insert.js'
+import NeoGraph from './page.js'
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -40,6 +41,7 @@ class App extends React.Component {
           <Tabs value={this.props.tab} onChange={(event, newValue) => this.props.setTab(newValue)}>
             <Tab label="Search" />
             <Tab label="Insert" />
+            <Tab label="Detail" />
           </Tabs>
         </AppBar>
         <TabPanel value={this.props.tab} index={0}>
@@ -47,6 +49,9 @@ class App extends React.Component {
         </TabPanel>
         <TabPanel value={this.props.tab} index={1}>
          <InsertForm/>
+        </TabPanel>
+        <TabPanel value={this.props.tab} index={2}> 
+          <NeoGraph/>
         </TabPanel>
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
