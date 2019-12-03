@@ -26,6 +26,11 @@ class Neo4jConnector(object):
                 session.write_transaction(self._create_wrote_relation,
                                           ArticleId, AuthorId, i)
 
+    def insert_citation_relation(self, ArticleId, SourceId):
+        with self._driver.session() as session:
+            session.write_transaction(self._create_cites_relation,
+                                        ArticleId, SourceId)
+
     def insert_new_article_with_citations(self, ArticleId, Title, writers, citations):
         self.insert_new_article(ArticleId, Title, writers)
 
