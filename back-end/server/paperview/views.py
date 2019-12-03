@@ -103,6 +103,7 @@ def specific_author(request, authorid):
                             [authorid])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
+
     elif request.method == "POST":   # update author
         body = json.loads(request.body)
         with connection.cursor() as cursor:
@@ -114,7 +115,7 @@ def specific_author(request, authorid):
         graph_conn.update_author_name(authorid, body['Name'])
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
-# TODO: write method for GET (i.e. specific author page)
+
     elif request.method == "GET":   # view author
         res = { 'result': 'SUCCESS'}
         with connection.cursor() as cursor:
@@ -133,11 +134,10 @@ def specific_author(request, authorid):
                 res['Interests'].append(interest_tuple[0])
 
         res['Articles'] = graph_conn.get_articles_written_by(authorid)
-
-        # TODO: get graph data to display
-
+        res['GraphData'] = graph_conn.get_graph_data(authorid, 'Author')
         return JsonResponse(res)
-    return HttpResponse('stub')
+
+    return HttpResponse('Error: Invalid request method')
 
 @csrf_exempt
 def specific_article(request, articleid):
@@ -166,8 +166,10 @@ def specific_article(request, articleid):
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
 
-# TODO: write method for GET (i.e. specific article page)
-    return HttpResponse('stub')
+    elif request.method == 'GET': # View article
+        pass # TODO: write method for GET (i.e. specific article page)
+
+    return HttpResponse('Error: Invalid request method')
 
 @csrf_exempt
 def new_author(request):

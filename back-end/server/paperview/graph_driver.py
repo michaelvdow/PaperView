@@ -15,13 +15,11 @@ class Neo4jConnector(object):
 
     def insert_new_author(self, AuthorId, Name):
         with self._driver.session() as session:
-            return session.write_transaction(self._insert_author_query,
-                                             AuthorId, Name)
+            session.write_transaction(self._insert_author_query, AuthorId, Name)
 
     def insert_new_article(self, ArticleId, Title, writers):
         with self._driver.session() as session:
-            session.write_transaction(self._insert_article_query,
-                                             ArticleId, Title)
+            session.write_transaction(self._insert_article_query, ArticleId, Title)
             for i in range(len(writers)):
                 AuthorId = writers[i]
                 session.write_transaction(self._create_wrote_relation,
@@ -29,8 +27,7 @@ class Neo4jConnector(object):
 
     def insert_citation_relation(self, ArticleId, SourceId):
         with self._driver.session() as session:
-            session.write_transaction(self._create_cites_relation,
-                                        ArticleId, SourceId)
+            session.write_transaction(self._create_cites_relation, ArticleId, SourceId)
 
     def insert_new_article_with_citations(self, ArticleId, Title, writers,
                                           citations):
@@ -38,8 +35,7 @@ class Neo4jConnector(object):
 
         with self._driver.session() as session:
             for source in citations:
-                session.write_transaction(self._create_cites_relation,
-                                          ArticleId, source)
+                session.write_transaction(self._create_cites_relation, ArticleId, source)
 
     def delete_author(self, AuthorId):
         with self._driver.session() as session:
@@ -52,8 +48,7 @@ class Neo4jConnector(object):
 
     def update_author_name(self, AuthorId, new_name):
         with self._driver.session() as session:
-            session.write_transaction(self._update_author_name_query,
-                                      AuthorId, new_name)
+            session.write_transaction(self._update_author_name_query, AuthorId, new_name)
 
     def update_article_title(self, ArticleId, new_title):
         with self._driver.session() as session:
@@ -62,28 +57,21 @@ class Neo4jConnector(object):
 
     def get_articles_written_by(self, AuthorId):
         with self._driver.session() as session:
-            result = session.read_transaction(self._get_written_articles_query, AuthorId)
-        article_list = []
-        for record in result:
-            article_list.append(
-                {'ArticleId': record['a.ArticleId'], 'Title': record['a.Title']}
-            )
-        return article_list
+            return session.read_transaction(self._get_written_articles_query, AuthorId)
 
     def get_authors_of(self, ArticleId):
         with self._driver.session() as session:
-            result = session.read_transaction(self._get_authors_of_query, ArticleId)
-        author_list = []
-        for record in result:
-            author_list.append(
-                {'AuthorId': record['a.AuthorId'], 'Name': record['a.Name']}
-            )
-        return author_list
+            return session.read_transaction(self._get_authors_of_query, ArticleId)
 
-    #def update_relations(self, Wrote, Cites):
-    #    with self._driver.session() as session:
-    #        session.write_transaction(self._update_article_title_query,
-    #                                  ArticleId, new_title)
+    # ID should be the ArticleId or AuthorId; node_type should be 'Article' or 'Author'
+    def get_graph_data(self, ID, node_type):
+        data = {}
+        with self._driver.session() as session:
+            data['nodes'] = session.read_transaction(self._get_nearby_nodes,
+                                                     ID, node_type)
+            data['edges'] = session.read_transaction(self._get_nearby_edges,
+                                                     ID, node_type)
+        return data
 
     @staticmethod
     def _create_id_constraints(tx):
@@ -91,12 +79,69 @@ class Neo4jConnector(object):
         tx.run("CREATE CONSTRAINT ON (a:Article) ASSERT a.ArticleId IS UNIQUE")
 
     @staticmethod
+    def _get_nearby_nodes(tx, ID, root_type):
+        result = tx.run("MATCH (root) "
+                        "WHERE ($root_type = 'Article' AND root.ArticleId = $ID) "
+                        "    OR ($root_type = 'Author' AND root.AuthorId = $ID) "
+                        "MATCH (root)-[*0..2]-(a) "
+                        "WITH DISTINCT a "
+                        "WITH LABELS(a)[0] AS type, a "
+                        "RETURN type, "
+                        "CASE type "
+                        "    WHEN 'Article' THEN a.Title "
+                        "    WHEN 'Author' THEN a.Name "
+                        "END AS label, "
+                        "CASE type "
+                        "    WHEN 'Article' THEN a.ArticleId "
+                        "    WHEN 'Author' THEN a.AuthorId "
+                        "END AS linkId, "
+                        "ID(a) as id",
+                        root_type=root_type, ID=ID)
+        nodes = []
+        for record in result:
+            nodes.append(
+                {
+                    'id': record['id'],
+                    'type': record['type'],
+                    'label': record['label'],
+                    'linkId': record['linkId']
+                }
+            )
+        return nodes
+
+    @staticmethod
+    def _get_nearby_edges(tx, ID, root_type):
+        result = tx.run("MATCH (root) "
+                        "WHERE ($root_type = 'Article' AND root.ArticleId = $ID) "
+                        "    OR ($root_type = 'Author' AND root.AuthorId = $ID) "
+                        "MATCH (root)-[*0..2]-()-[r]-()-[*0..2]-(root) "
+                        "WITH DISTINCT r "
+                        "RETURN type(r) AS type, "
+                        "id(startNode(r)) AS from, id(endNode(r)) AS to",
+                        root_type=root_type, ID=ID)
+        edges = []
+        for record in result:
+            edges.append(
+                {
+                    'from': record['from'],
+                    'to': record['to'],
+                    'type': record['type']
+                }
+            )
+        return edges
+
+    @staticmethod
     def _get_written_articles_query(tx, AuthorId):
         result = tx.run("MATCH (:Author {AuthorId: $AuthorId})-[:Wrote]->(a:Article) "
                         "RETURN a.ArticleId, a.Title "
                         "ORDER BY a.Title",
                         AuthorId=AuthorId)
-        return result
+        article_list = []
+        for record in result:
+            article_list.append(
+                {'ArticleId': record['a.ArticleId'], 'Title': record['a.Title']}
+            )
+        return article_list
 
     @staticmethod
     def _get_authors_of_query(tx, ArticleId):
@@ -104,57 +149,62 @@ class Neo4jConnector(object):
                         "RETURN a.AuthorId, a.Name "
                         "ORDER BY w.rank ",
                         ArticleId=ArticleId)
-        return result
+        author_list = []
+        for record in result:
+            author_list.append(
+                {'AuthorId': record['a.AuthorId'], 'Name': record['a.Name']}
+            )
+        return author_list
 
     @staticmethod
     def _insert_author_query(tx, AuthorId, Name):
-        result = tx.run("MERGE (a:Author {AuthorId: $AuthorId}) "
-                        "SET a.Name = $Name ",
-                        AuthorId=AuthorId, Name=Name)
+        tx.run("MERGE (a:Author {AuthorId: $AuthorId}) "
+               "SET a.Name = $Name ",
+               AuthorId=AuthorId, Name=Name)
 
     @staticmethod
     def _insert_article_query(tx, ArticleId, Title):
-        result = tx.run("MERGE (a:Article {ArticleId: $ArticleId}) "
-                        "SET a.Title = $Title ",
-                        ArticleId=ArticleId, Title=Title)
+        tx.run("MERGE (a:Article {ArticleId: $ArticleId}) "
+               "SET a.Title = $Title ",
+               ArticleId=ArticleId, Title=Title)
 
     @staticmethod
     def _create_wrote_relation(tx, ArticleId, AuthorId, rank):
-        result = tx.run("MATCH (art:Article {ArticleId: $ArticleId}) "
-                        "MATCH (wri:Author {AuthorId: $AuthorId}) "
-                        "CREATE (wri)-[:Wrote {rank: $rank}]->(art)",
-                        ArticleId=ArticleId, AuthorId=AuthorId, rank=rank)
+        tx.run("MATCH (art:Article {ArticleId: $ArticleId}) "
+               "MATCH (wri:Author {AuthorId: $AuthorId}) "
+               "CREATE (wri)-[:Wrote {rank: $rank}]->(art)",
+               ArticleId=ArticleId, AuthorId=AuthorId, rank=rank)
 
     @staticmethod
     def _create_cites_relation(tx, CitedBy, Source):
-        result = tx.run("MATCH (citer:Article {ArticleId: $CitedBy}) "
-                        "MATCH (source:Article {ArticleId: $Source}) "
-                        "CREATE (citer)-[:Cites]->(source)",
-                        CitedBy=CitedBy, Source=Source)
+        tx.run("MATCH (citer:Article {ArticleId: $CitedBy}) "
+               "MATCH (source:Article {ArticleId: $Source}) "
+               "CREATE (citer)-[:Cites]->(source)",
+               CitedBy=CitedBy, Source=Source)
 
     @staticmethod
     def _delete_author_query(tx, AuthorId):
-        result = tx.run("MATCH (deletedAuthor:Author {AuthorId: $AuthorId}) "
-                        "DETACH DELETE deletedAuthor",
-                        AuthorId=AuthorId)
+        tx.run("MATCH (deletedAuthor:Author {AuthorId: $AuthorId}) "
+               "DETACH DELETE deletedAuthor",
+               AuthorId=AuthorId)
 
     @staticmethod
     def _delete_article_query(tx, ArticleId):
-        result = tx.run("MATCH (deletedArticle:Article {ArticleId: $ArticleId}) "
-                        "DETACH DELETE deletedArticle",
-                        ArticleId=ArticleId)
+        tx.run("MATCH (deletedArticle:Article {ArticleId: $ArticleId}) "
+               "DETACH DELETE deletedArticle",
+               ArticleId=ArticleId)
 
     @staticmethod
     def _update_author_name_query(tx, AuthorId, new_name):
-        result = tx.run("MATCH (a:Author {AuthorId: $AuthorId}) "
-                        "SET a.Name = $Name",
-                        AuthorId=AuthorId, Name=new_name)
+        tx.run("MATCH (a:Author {AuthorId: $AuthorId}) "
+               "SET a.Name = $Name",
+               AuthorId=AuthorId, Name=new_name)
 
     @staticmethod
     def _update_article_title_query(tx, ArticleId, new_title):
-        result = tx.run("MATCH (a:Article {ArticleId: $ArticleId}) "
-                        "SET a.Title = $Title",
-                        ArticleId=ArticleId, Title=new_title)
+        tx.run("MATCH (a:Article {ArticleId: $ArticleId}) "
+               "SET a.Title = $Title",
+               ArticleId=ArticleId, Title=new_title)
 
     ## Test methods
 
