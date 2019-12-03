@@ -15,7 +15,8 @@ class Neo4jConnector(object):
 
     def insert_new_author(self, AuthorId, Name):
         with self._driver.session() as session:
-            return session.write_transaction(self._insert_author_query, AuthorId, Name)
+            return session.write_transaction(self._insert_author_query,
+                                             AuthorId, Name)
 
     def insert_new_article(self, ArticleId, Title, writers):
         with self._driver.session() as session:
@@ -31,7 +32,8 @@ class Neo4jConnector(object):
             session.write_transaction(self._create_cites_relation,
                                         ArticleId, SourceId)
 
-    def insert_new_article_with_citations(self, ArticleId, Title, writers, citations):
+    def insert_new_article_with_citations(self, ArticleId, Title, writers,
+                                          citations):
         self.insert_new_article(ArticleId, Title, writers)
 
         with self._driver.session() as session:
@@ -58,6 +60,17 @@ class Neo4jConnector(object):
             session.write_transaction(self._update_article_title_query,
                                       ArticleId, new_title)
 
+    def get_written_articles(self, AuthorId):
+        with self._driver.session() as session:
+            result = session.read_transaction(self._get_articles_written_by, AuthorId)
+        article_list = []
+        for record in result:
+            article_list.append(
+                {'ArticleId': record['a.ArticleId'], 'Title': record['a.Title']}
+            )
+        return article_list
+
+
 
     #def update_relations(self, Wrote, Cites):
     #    with self._driver.session() as session:
@@ -68,6 +81,14 @@ class Neo4jConnector(object):
     def _create_id_constraints(tx):
         tx.run("CREATE CONSTRAINT ON (a:Author) ASSERT a.AuthorId IS UNIQUE")
         tx.run("CREATE CONSTRAINT ON (a:Article) ASSERT a.ArticleId IS UNIQUE")
+
+    @staticmethod
+    def _get_articles_written_by(tx, AuthorId):
+        result = tx.run("MATCH (:Author {AuthorId: $AuthorId})-[:Wrote]->(a:Article) "
+                        "RETURN a.ArticleId, a.Title "
+                        "ORDER BY a.Title",
+                        AuthorId=AuthorId)
+        return result
 
     @staticmethod
     def _insert_author_query(tx, AuthorId, Name):
@@ -120,6 +141,22 @@ class Neo4jConnector(object):
                         ArticleId=ArticleId, Title=new_title)
 
     ## Test methods
+
+
+    def get_how_titles(self):
+        with self._driver.session() as session:
+            result = session.read_transaction(self._get_how_titles_query)
+            title_list = []
+            for record in result:
+                title_list.append(record['a.Title'])
+            return title_list
+
+    @staticmethod
+    def _get_how_titles_query(tx):
+        result = tx.run ("MATCH (a:Article) "
+                         "WHERE a.Title STARTS WITH 'How' "
+                         "RETURN a.Title")
+        return result
 
     def return_greeting(self, message):
         with self._driver.session() as session:

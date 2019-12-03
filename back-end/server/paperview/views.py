@@ -107,6 +107,19 @@ def specific_author(request, authorid):
         response = { 'result': 'SUCCESS'}
         return JsonResponse(response)
 # TODO: write method for GET (i.e. specific author page)
+    elif request.method == "GET":   # view author
+        res = { 'result': 'SUCCESS'}
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT AuthorId, Name, Affiliation, CitedBy, "
+                           "HIndex, I10Index FROM Author "
+                           "WHERE AuthorId = %s", [authorid])
+            basic_info = cursor.fetchone()
+            res['AuthorId'], res['Name'], res['Affiliation'], res['CitedBy'], \
+                res['HIndex'], res['I10Index'] = basic_info
+
+        
+        
+        return JsonResponse(res)
     return HttpResponse('stub')
 
 @csrf_exempt
