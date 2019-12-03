@@ -31,7 +31,7 @@ def insertWroteRelations(liteConn, mysqlConn, graphConn):
     mysqlCur = mysqlConn.cursor()
     i = 0
     for row in liteCur:
-        # Progress
+        # Progress, last stopped at 16.3
         if i % 1000 == 0:
             print(i/2000000*100)
         i += 1
@@ -42,21 +42,24 @@ def insertWroteRelations(liteConn, mysqlConn, graphConn):
 
         # Find primary author id
         primaryAuthorName = row[1]
-        mysqlCur.execute("SELECT AuthorId FROM Author WHERE Name = %s", [primaryAuthorName])
-        primaryAuthorId = mysqlCur.fetchOne()
-        if primaryAuthorId != None and primaryAuthorId[0] != None:
-            print(primaryAuthorId[0])
-            writers.append(primaryAuthorId[0])
+        if primaryAuthorName != None:
+            mysqlCur.execute("SELECT AuthorId FROM Author WHERE Name = %s", [primaryAuthorName])
+            primaryAuthorId = mysqlCur.fetchone()
+            if primaryAuthorId != None and primaryAuthorId[0] != None:
+                writers.append(primaryAuthorId[0])
 
         # Try to match co authors
-        coAuthors = row[7].split(' and ')
-        for author in coAuthors:
-            mysqlCur.execute("SELECT AuthorId FROM Author WHERE Name = %s", [author]) # Could try to use fuzzy matching for abbreviations
-            authorId = mysqlCur.fetchOne()
-            if authorId != None and authorId[0] != None and authorId[0] not in writers:
-                writers.append(authorId[0])
-
-        graphConn.insert_new_article(articleId, title, writers)
+        if row[7] != None:
+            coAuthors = row[7].split(' and ')
+            for author in coAuthors:
+                mysqlCur.execute("SELECT AuthorId FROM Author WHERE Name = %s", [author]) # Could try to use fuzzy matching for abbreviations
+                authorId = mysqlCur.fetchone()
+                if authorId != None and authorId[0] != None and authorId[0] not in writers:
+                    writers.append(authorId[0])
+        try:
+            graphConn.insert_new_article(articleId, title, writers)
+        except:
+            pass
 
     print("FINISHED!")
     finalSeconds = time.time()
@@ -67,9 +70,36 @@ def insertCitationRelations(mysqlConn, graphConn):
     seconds = time.time()
     mysqlCur = mysqlConn.cursor()
     mysqlCur.execute("SELECT * FROM Citation")
-    for row in mysqlCur:
-        graphConn.insert_citation_relation(row[0], row[1])
+    results = mysqlCur.fetchall()
+    innerCur = mysqlConn.cursor()
+    for row in results:
+        print(row)
+        articleId = row[0]
+        sourceId = row[1]
 
+        # Insert first article and primary author
+        try:
+            innerCur.execute("SELECT Title, PrimaryAuthorId FROM Article WHERE articleId = %s", [articleId])
+            articleInfo = innerCur.fetchone()
+            innerCur.execute("SELECT Name FROM Author WHERE authorId = %s", [articleInfo[1]])
+            authorName = innerCur.fetchone()[0]
+            graphConn.insert_new_author(articleInfo[1], authorName)
+            graphConn.insert_new_article(articleId, articleInfo[0], [articleInfo[1]])
+        except:
+            pass
+        # Insert second article and primary author
+        try:
+            innerCur.execute("SELECT Title, PrimaryAuthorId FROM Article WHERE articleId = %s", [sourceId])
+            articleInfo = innerCur.fetchone()
+            innerCur.execute("SELECT Name FROM Author WHERE authorId = %s", [articleInfo[1]])
+            authorName = innerCur.fetchone()[0]
+            graphConn.insert_new_author(articleInfo[1], authorName)
+            graphConn.insert_new_article(sourceId, articleInfo[0], [articleInfo[1]])
+        except:
+            pass
+
+        graphConn.insert_citation_relation(articleId, sourceId)
+     
     print("FINISHED!")
     finalSeconds = time.time()
     print("Seconds to run: " + str(finalSeconds - seconds))
@@ -86,5 +116,5 @@ mysqlConn = pymysql.connect(host='localhost',
 # Uncomment functions below to insert entries
 
 # insertAuthors(mysqlConn, graphConn)
-insertWroteRelations(liteConn, mysqlConn, graphConn)
-# insertCitationRelations(mysqlConn, graphConn)
+# insertWroteRelations(liteConn, mysqlConn, graphConn)
+insertCitationRelations(mysqlConn, graphConn)
