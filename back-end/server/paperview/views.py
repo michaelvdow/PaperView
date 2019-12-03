@@ -71,18 +71,26 @@ def search_for_interest(request):
     interest = request.GET['interest']
     search_string = build_search_string(interest)
     with connection.cursor() as cursor:
-        cursor.execute(	"SELECT AuthorId, Name, MAX(Interest) AS Interest "
+        cursor.execute(	"SELECT AuthorId, Name, Affiliation, CitedBy, "
+                       "HIndex, I10Index "
                         "FROM Author NATURAL JOIN InterestedIn "
                         "WHERE Interest LIKE %s "
                         "GROUP BY AuthorId "
-                        "ORDER BY Name",
+                        "ORDER BY CitedBy DESC",
                         [search_string])
         rows = cursor.fetchall()
 
     interest_list = []
     for row in rows:
-        #TODO: make a proper dict as above
-        interest_list.append(row[0])
+        author_dict = {
+            'AuthorId': row[0],
+            'Name': row[1],
+            'Affiliation': row[2],
+            'CitedBy': row[3],
+            'HIndex': row[4],
+            'I10Index': row[5]
+        }
+        interest_list.append(author_dict)
 
     response = { 'result': 'SUCCESS', 'Authors': interest_list }
     return JsonResponse(response)
