@@ -195,8 +195,10 @@ export const onInsertSubmit = (input) => {
     }
 }
 
-export const onGotoDetailPage = (input) => {
+export const onGotoDetailPage = (detailedtype, id) => {
     return {
-        type: actions.ON_GOTO_DETAILED_PAGE
+        type: actions.ON_GOTO_DETAILED_PAGE,
+        detailedtype: detailedtype,
+        id: id
     }
 }

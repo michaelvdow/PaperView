@@ -22,6 +22,7 @@ function *submit() {
                 for (var i = 0; i < articles.length; i++) {
                     const authorResponse = yield call(fetch, `${Constants.URL}/${searchType}/${articles[i].PrimaryAuthorId}"`)
                     articles[i]["authorName"] = authorResponse.Name;
+                    console.log(authorResponse.Name);
                 }
                 yield put(actions.onSearchResult(articles))
             } else {
@@ -206,6 +207,20 @@ function *insert(action) {
     }
 }
 
+function *detailed(action) {
+    let type = yield select(selectors.getDetailedType)
+    let id = yield select(selectors.getDetailedID)
+    console.log(type)
+    console.log(id)
+    try {
+        const response = yield call(fetch, `${Constants.URL}/${type}/${id}`)
+        console.log(response)
+    } catch(e) {
+        yield put(actions.launchSnackBar("Could not connect to server"))
+    }
+    
+}
+
 function *watchUpdateRow() {
     yield takeLatest(actionTypes.UPDATE_ROW, updateRow);
 }
@@ -226,13 +241,18 @@ function *watchInsert() {
     yield takeLatest(actionTypes.ON_INSERT_SUBMIT, insert);
 }
 
+function *watchDetailed() {
+    yield takeLatest(actionTypes.ON_GOTO_DETAILED_PAGE, detailed);
+}
+
 function* rootSaga () {
     yield all([
         watchSubmit(),
         watchDelete(),
         watchUpdateRow(),
         watchDeleteRow(),
-        watchInsert()
+        watchInsert(),
+        watchDetailed()
     ])
 }
 

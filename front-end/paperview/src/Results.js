@@ -52,8 +52,10 @@ class Results extends React.Component {
                             {
                                 icon: 'filter',
                                 tooltip: 'Goto detailed page',
-                                onClick: (event, rowData) => { alert("Hi")
-                                }
+                                onClick: (event, rowData) => {
+                                    this.props.searchType === Constants.ARTICLE ? 
+                                    this.props.onGotoDetailedPage(Constants.ARTICLE, rowData.ArticleId) : 
+                                    this.props.onGotoDetailedPage(Constants.AUTHOR, rowData.AuthorId)}
                             }
                         ]}
                         editable={{
@@ -94,7 +96,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
     return {
         updateRow: (oldData, newData) => dispatch(actions.updateRow(oldData, newData)),
-        onRowDelete: (oldData) => dispatch(actions.onRowDelete(oldData))
+        onRowDelete: (oldData) => dispatch(actions.onRowDelete(oldData)),
+        onGotoDetailedPage: (type, id) => dispatch(actions.onGotoDetailPage(type, id))
     }
 }
 

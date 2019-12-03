@@ -93,3 +93,11 @@ export const getAuthorI10 = store => {
 export const getAuthorInterest = store => {
     return store.insertAuthorInterest;
 }
+
+export const getDetailedType = store => {
+    return store.detailedType;
+}
+
+export const getDetailedID = store => {
+    return store.detailedID;
+}

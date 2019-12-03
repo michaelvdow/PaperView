@@ -25,7 +25,10 @@ const initialState = {
     insertAuthorCitation: 0,
     insertAuthorH: 0,
     insertAuthorI10: 0,
-    insertAuthorInterest: ""
+    insertAuthorInterest: "",
+    detailedType: Constants.AUTHOR,
+    detailedID: 0,
+    detailedData: []
 }
 
 function rootReducer(state=initialState, action) {
@@ -80,6 +83,8 @@ function rootReducer(state=initialState, action) {
             return Object.assign({}, state, {insertAuthorI10: action.input})
         case actionTypes.ON_INSERT_AUTHOR_INTEREST:
             return Object.assign({}, state, {insertAuthorInterest: action.input})
+        case actionTypes.ON_GOTO_DETAILED_PAGE:
+            return Object.assign({}, state, {detailedType: action.detailedtype, detailedID: action.id, mainTab: 2})
         default:
             return state
     }

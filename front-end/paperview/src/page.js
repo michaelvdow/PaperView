@@ -7,7 +7,18 @@ import * as Constants from './Constants'
 import * as selectors from './redux/selectors'
 import * as actions from './redux/actions'
 
+/*
+function AuthorDetailedForm(props) {
+    return (
+        <div id = "AuthorDetailedForm">
+            <p "name: = " + this.props.
+        </div>
 
+
+
+    )
+}
+*/
 
 class NeoGraph extends React.Component {
   constructor(props) {
