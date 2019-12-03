@@ -60,9 +60,9 @@ class Neo4jConnector(object):
             session.write_transaction(self._update_article_title_query,
                                       ArticleId, new_title)
 
-    def get_written_articles(self, AuthorId):
+    def get_articles_written_by(self, AuthorId):
         with self._driver.session() as session:
-            result = session.read_transaction(self._get_articles_written_by, AuthorId)
+            result = session.read_transaction(self._get_written_articles_query, AuthorId)
         article_list = []
         for record in result:
             article_list.append(
@@ -70,7 +70,15 @@ class Neo4jConnector(object):
             )
         return article_list
 
-
+    def get_authors_of(self, ArticleId):
+        with self._driver.session() as session:
+            result = session.read_transaction(self._get_authors_of_query, ArticleId)
+        author_list = []
+        for record in result:
+            author_list.append(
+                {'AuthorId': record['a.AuthorId'], 'Name': record['a.Name']}
+            )
+        return author_list
 
     #def update_relations(self, Wrote, Cites):
     #    with self._driver.session() as session:
@@ -83,11 +91,19 @@ class Neo4jConnector(object):
         tx.run("CREATE CONSTRAINT ON (a:Article) ASSERT a.ArticleId IS UNIQUE")
 
     @staticmethod
-    def _get_articles_written_by(tx, AuthorId):
+    def _get_written_articles_query(tx, AuthorId):
         result = tx.run("MATCH (:Author {AuthorId: $AuthorId})-[:Wrote]->(a:Article) "
                         "RETURN a.ArticleId, a.Title "
                         "ORDER BY a.Title",
                         AuthorId=AuthorId)
+        return result
+
+    @staticmethod
+    def _get_authors_of_query(tx, ArticleId):
+        result = tx.run("MATCH (a:Author)-[w:Wrote]->(:Article {ArticleId: $ArticleId}) "
+                        "RETURN a.AuthorId, a.Name "
+                        "ORDER BY w.rank ",
+                        ArticleId=ArticleId)
         return result
 
     @staticmethod
