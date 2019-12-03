@@ -348,7 +348,7 @@ def run():
     # entry = feed['entries'][numEntries-5]
     for archive in ARCHIVE_NAMES:
         print(archive)
-        feed = feedparser.parse(URL_NAME + 'cs')
+        feed = feedparser.parse(URL_NAME + ARCHIVE_NAMES)
         numEntries = len(feed['entries'])
         logging.info("Number of entries: " + str(numEntries))
         i = 1
