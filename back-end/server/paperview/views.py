@@ -117,8 +117,17 @@ def specific_author(request, authorid):
             res['AuthorId'], res['Name'], res['Affiliation'], res['CitedBy'], \
                 res['HIndex'], res['I10Index'] = basic_info
 
-        
-        
+            cursor.execute("SELECT Interest FROM InterestedIn "
+                           "WHERE AuthorId = %s", [authorid])
+            interest_raw = cursor.fetchall()
+            res['Interests'] = []
+            for interest_tuple in interest_raw:
+                res['Interests'].append(interest_tuple[0])
+
+        res['Articles'] = graph_conn.get_articles_written_by(authorid)
+
+        # TODO: get graph data to display
+
         return JsonResponse(res)
     return HttpResponse('stub')
 
