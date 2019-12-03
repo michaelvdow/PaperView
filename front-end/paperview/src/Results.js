@@ -48,6 +48,14 @@ class Results extends React.Component {
                         }
                         title={this.props.searchType === Constants.AUTHOR ? "Author Details" : 
                             (this.props.searchType === Constants.ARTICLE ? "Article Details" : "Expert Details")}
+                        actions = {[
+                            {
+                                icon: 'filter',
+                                tooltip: 'Goto detailed page',
+                                onClick: (event, rowData) => { alert("Hi")
+                                }
+                            }
+                        ]}
                         editable={{
                             onRowUpdate: (newData, oldData) =>
                               new Promise((resolve, reject) => {
@@ -68,6 +76,7 @@ class Results extends React.Component {
                                 }, 1000)
                                 })
                             }}
+                            onRowSace
                     />
                 </Paper>
             </div>  
