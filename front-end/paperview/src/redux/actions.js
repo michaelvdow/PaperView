@@ -218,7 +218,6 @@ export const changeGraph = (input) => {
 }
 
 export const onSelectNode = (input) => {
-    console.log(1)
     return {
         type: actions.ON_SELECT_NODE,
         input: input
