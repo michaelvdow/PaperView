@@ -226,6 +226,6 @@ export const onSelectNode = (input) => {
 
 export const updateGraph = () => {
     return {
-        typer: actions.UPDATE_GRAPH
+        type: actions.UPDATE_GRAPH
     }
 }

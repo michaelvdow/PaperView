@@ -26,8 +26,8 @@ class AuthorDetailedForm extends React.Component {
       console.log(this.props.detailData)
     return (
         <div id="AuthorDetailedForm">
-            <Button variant="contained"
-             onClick={() => this.props.updatedGraph("idk")}>Display graph</Button>
+            <Button variant="contained" color="primary"
+             onClick={() => this.props.updateGraph()}>Display graph</Button>
             {this.props.detailData.AuthorId ? <Paper style={{overflow: 'auto'}}>
                 <Typography variant="h5" component="h3">
                     {this.props.detailData.Name}
