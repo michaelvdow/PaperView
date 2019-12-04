@@ -49,9 +49,7 @@ class NeoGraph extends React.Component {
   render() {
       var onSelectNode = this.props.onSelectNode;
       var events = {
-          select: function(event) {
-              onSelectNode(event)
-          }
+          select: (event) => this.props.onSelectNode(event)
       }
     return (
         <div id="detailPage">

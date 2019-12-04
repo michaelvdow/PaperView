@@ -241,7 +241,11 @@ function *detailed(action) {
 function *changedetailed(action) {
     var selectNodeId = action.input.nodes[0]
     const graph = yield select(selectors.getGraph)
-    var selectNode = graph.nodes[selectNodeId]
+    console.log("id" + selectNodeId)
+    var selectNode = graph.nodes.filter(obj => {
+        return obj.id === selectNodeId
+      })[0]
+    console.log(selectNode)
     var type = selectNode.type === "Author" ? Constants.AUTHOR : Constants.ARTICLE 
     var id = selectNode.linkId
     console.log(type)
