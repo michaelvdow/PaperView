@@ -19,19 +19,21 @@ class NeoGraph extends React.Component {
             color: "#000000"
         },
         height: "600px",
-        width: "800px",
+        width: "700px",
         "physics": {
             "barnesHut": {
-                "avoidOverlap": 0.5,
-                damping: 0.2,
-                springConstant: 0.00
+              "springConstant": 0.1,
+              "avoidOverlap": 0.2
             }
-        },
+          },
         nodes:{
             shape: 'ellipse',
             widthConstraint: {
                 maximum: 150   
             }
+        },
+        edges: {
+            width: 1
         },
         "physics": {
             "barnesHut": {

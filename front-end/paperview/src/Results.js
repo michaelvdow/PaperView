@@ -7,6 +7,7 @@ import * as Constants from './Constants'
 import { connect } from 'react-redux'
 
 
+
 class Results extends React.Component {
     constructor(props) {
         super(props);

@@ -1,12 +1,22 @@
 #detailPage{
     display:flex;
+    flex-direction: row;
     justify-content: space-between;
-    width: 100%;
+    width: 1250px;
+    max-height: 600px;
 }
 
 #AuthorDetailedForm{
     display: flex;
     min-width: 50%;
     flex-direction: column;
+    height: 700px;
+}
 
+#graph {
+    display: flex;
+}
+
+.graphPaper {
+    margin: 20px;
 }
