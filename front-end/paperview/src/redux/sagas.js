@@ -210,16 +210,25 @@ function *insert(action) {
 function *detailed(action) {
     let type = yield select(selectors.getDetailedType)
     let id = yield select(selectors.getDetailedID)
-    console.log(type)
-    console.log(id)
     try {
         const response = yield call(fetch, `${Constants.URL}/${type}/${id}`)
-        console.log(response)
         const responseBody = yield response.json()
-        console.log(responseBody)
         if (responseBody.result === Constants.SUCCESS) {
             yield put(actions.changeDetailPage(responseBody))
-            yield put(actions.changeGraph(responseBody.GraphData))
+            var graph = responseBody.GraphData
+            console.log(graph)
+            for (var i = 0; i < graph.nodes.length; i++) {
+                if (graph.nodes[i].type === "Article")
+                    graph.nodes[i].color = "#ffa600"
+            }
+            for (var i = 0; i < graph.edges.length; i++) {
+                if (graph.edges[i].type === "Wrote")
+                    graph.edges[i].color = "2f4b7c"
+                else
+                    graph.edges[i].color = "a05195"
+            }
+            console.log(graph)
+            yield put(actions.changeGraph(graph))
         }
         else 
             yield put(actions.launchSnackBar("Fail to find detailed information"))

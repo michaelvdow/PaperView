@@ -2,20 +2,11 @@ import React from 'react';
 import './page.css';
 import { connect } from 'react-redux'
 import Graph from 'react-graph-vis'
+import AuthorDetailForm from './AuthorDetailedForm'
 
 import * as Constants from './Constants'
 import * as selectors from './redux/selectors'
 import * as actions from './redux/actions'
-
-
-function AuthorDetailedForm(props) {
-    console.log(props.data);
-    return (
-        <div id = "AuthorDetailedForm">
-            <p Hi />
-        </div>
-    );
-}
 
 class NeoGraph extends React.Component {
   constructor(props) {
@@ -28,11 +19,12 @@ class NeoGraph extends React.Component {
             color: "#000000"
         },
         height: "600px",
-        width: "600px",
+        width: "800px",
         "physics": {
             "barnesHut": {
-                "springConstant": 0.05,
-                "avoidOverlap": 0.3
+                "avoidOverlap": 0.5,
+                damping: 0.2,
+                springConstant: 0.00
             }
         },
         nodes:{
@@ -41,7 +33,12 @@ class NeoGraph extends React.Component {
                 maximum: 150   
             }
         },
-        margin: 1
+        "physics": {
+            "barnesHut": {
+              "springConstant": 0,
+              "avoidOverlap": 0.2
+            }
+          }
     };
     this.events = {
         select: function(event) {
@@ -56,9 +53,11 @@ class NeoGraph extends React.Component {
 
   render() {
     return (
-        <div>
-            {AuthorDetailedForm(this.props)}
-            <Graph graph={this.props.graph} options={this.options} events={this.events} />
+        <div id="detailPage">
+            <AuthorDetailForm/>
+            <div id="graph">
+                <Graph graph={this.props.graph} options={this.options} events={this.events} />
+            </div>
         </div>
     ); 
   }
