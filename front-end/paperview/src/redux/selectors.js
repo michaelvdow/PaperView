@@ -101,3 +101,7 @@ export const getDetailedType = store => {
 export const getDetailedID = store => {
     return store.detailedID;
 }
+
+export const getGraph = store => {
+    return store.graph;
+}

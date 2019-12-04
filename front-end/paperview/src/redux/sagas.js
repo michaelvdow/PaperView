@@ -215,6 +215,14 @@ function *detailed(action) {
     try {
         const response = yield call(fetch, `${Constants.URL}/${type}/${id}`)
         console.log(response)
+        const responseBody = yield response.json()
+        console.log(responseBody)
+        if (responseBody.result === Constants.SUCCESS) {
+            yield put(actions.changeDetailPage(responseBody))
+            yield put(actions.changeGraph(responseBody.GraphData))
+        }
+        else 
+            yield put(actions.launchSnackBar("Fail to find detailed information"))
     } catch(e) {
         yield put(actions.launchSnackBar("Could not connect to server"))
     }
