@@ -260,6 +260,14 @@ function *changedetailed(action) {
     }
 }
 
+function *updageGraph(action) {
+    // UPDATE GRAPH
+}
+
+function *watchUpdateGraph() {
+    yield takeLatest(actionTypes.UPDATE_GRAPH, updageGraph);
+}
+
 function *watchUpdateRow() {
     yield takeLatest(actionTypes.UPDATE_ROW, updateRow);
 }

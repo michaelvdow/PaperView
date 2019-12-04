@@ -10,6 +10,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MaterialTable from "material-table";
+import Button from '@material-ui/core/Button';
 
 import * as Constants from './Constants'
 import * as selectors from './redux/selectors'
@@ -25,6 +26,8 @@ class AuthorDetailedForm extends React.Component {
       console.log(this.props.detailData)
     return (
         <div id="AuthorDetailedForm">
+            <Button variant="contained" color="primary"
+             onClick={() => this.props.updateGraph()}>Display graph</Button>
             {this.props.detailData.AuthorId ? <Paper style={{overflow: 'auto'}}>
                 <Typography variant="h5" component="h3">
                     {this.props.detailData.Name}
@@ -128,6 +131,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        updateGraph: () => dispatch(actions.updateGraph())
     }
 }
 
