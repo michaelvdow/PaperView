@@ -69,3 +69,6 @@ django-test/django-env/*
 
 # pycaches
 __pycache__
+
+# yarn lock?
+yarn.lock
