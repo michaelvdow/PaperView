@@ -31,10 +31,17 @@ class NeoGraph extends React.Component {
         width: "600px",
         "physics": {
             "barnesHut": {
-                "springConstant": 0,
-                "avoidOverlap": 0.2
+                "springConstant": 0.05,
+                "avoidOverlap": 0.3
             }
-        }
+        },
+        nodes:{
+            shape: 'ellipse',
+            widthConstraint: {
+                maximum: 150   
+            }
+        },
+        margin: 1
     };
     this.events = {
         select: function(event) {
