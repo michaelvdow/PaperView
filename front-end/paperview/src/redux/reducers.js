@@ -28,7 +28,11 @@ const initialState = {
     insertAuthorInterest: "",
     detailedType: Constants.AUTHOR,
     detailedID: 0,
-    detailedData: []
+    detailedData: [],
+    graph: {
+        nodes: [{ id: 1, label: "NULL"}],
+        edges: []
+    }
 }
 
 function rootReducer(state=initialState, action) {
@@ -85,6 +89,10 @@ function rootReducer(state=initialState, action) {
             return Object.assign({}, state, {insertAuthorInterest: action.input})
         case actionTypes.ON_GOTO_DETAILED_PAGE:
             return Object.assign({}, state, {detailedType: action.detailedtype, detailedID: action.id, mainTab: 2})
+        case actionTypes.CHANGE_DETIAL_PAGE:
+            return Object.assign({}, state, {detailedData: action.input})
+        case actionTypes.CHANGE_GRAPH:
+            return Object.assign({}, state, {graph: action.input})
         default:
             return state
     }

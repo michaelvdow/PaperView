@@ -202,3 +202,17 @@ export const onGotoDetailPage = (detailedtype, id) => {
         id: id
     }
 }
+
+export const changeDetailPage = (input) => {
+    return {
+        type: actions.CHANGE_DETIAL_PAGE,
+        input: input
+    }
+}
+
+export const changeGraph = (input) => {
+    return {
+        type: actions.CHANGE_GRAPH,
+        input: input
+    }
+}

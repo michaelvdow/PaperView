@@ -23,16 +23,6 @@ function AuthorDetailedForm(props) {
 class NeoGraph extends React.Component {
   constructor(props) {
     super(props);
-    this.graph = {
-        nodes: [
-            { id: "1", label: "Node 1", color: "#e04141" , authorID: 1},
-            { id: 2, label: "Node 2", color: "#e09c41" , authorID: 1},
-            { id: 3, label: "Node 3", color: "#e0df41" },
-            { id: 4, label: "Node 4", color: "#7be041" },
-            { id: 5, label: "Node 5", color: "#41e0c9" }
-        ],
-        edges: [{ from: "1", to: 2 , isCitation: true, color:"#e09c41" }, { from: "1", to: 3 }, { from: 2, to: 4 }, { from: 2, to: 5 }]
-    };
     this.options = {
         layout: {
             hierarchical: false
@@ -56,7 +46,7 @@ class NeoGraph extends React.Component {
 
   render() {
     return (
-        <Graph graph={this.graph} options={this.options} events={this.events} />
+        <Graph graph={this.props.graph} options={this.options} events={this.events} />
         
     ); 
   }
@@ -65,7 +55,8 @@ class NeoGraph extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        tab: selectors.getMainTab(state)
+        tab: selectors.getMainTab(state),
+        graph: selectors.getGraph(state)
     }
 }
 
