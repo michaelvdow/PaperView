@@ -245,6 +245,14 @@ function *changedetailed(action) {
     console.log(edges)
 }
 
+function *updageGraph(action) {
+    // UPDATE GRAPH
+}
+
+function *watchUpdateGraph() {
+    yield takeLatest(actionTypes.UPDATE_GRAPH, updageGraph);
+}
+
 function *watchUpdateRow() {
     yield takeLatest(actionTypes.UPDATE_ROW, updateRow);
 }

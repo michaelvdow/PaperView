@@ -223,3 +223,9 @@ export const onSelectNode = (input) => {
         input: input
     }
 }
+
+export const updateGraph = () => {
+    return {
+        typer: actions.UPDATE_GRAPH
+    }
+}
