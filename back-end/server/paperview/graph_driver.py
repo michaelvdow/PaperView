@@ -92,7 +92,7 @@ class Neo4jConnector(object):
                         "WITH LABELS(a)[0] AS type, a "
                         "RETURN type, "
                         "CASE type "
-                        "    WHEN 'Article' THEN left(a.Title, 20) "
+                        "    WHEN 'Article' THEN left(a.Title, 40) + '...' "
                         "    WHEN 'Author' THEN a.Name "
                         "END AS label, "
                         "CASE type "

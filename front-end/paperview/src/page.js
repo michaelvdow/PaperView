@@ -32,7 +32,13 @@ class NeoGraph extends React.Component {
             widthConstraint: {
                 maximum: 150   
             }
-        }
+        },
+        "physics": {
+            "barnesHut": {
+              "springConstant": 0,
+              "avoidOverlap": 0.2
+            }
+          }
     };
   }
 
@@ -40,7 +46,10 @@ class NeoGraph extends React.Component {
     return (
         <div id="detailPage">
             <AuthorDetailForm/>
-            <Graph graph={this.props.graph} options={this.options} events={event => this.props.onSelectNode(event)} />
+
+            <div id="graph">
+                <Graph graph={this.props.graph} options={this.options} events={this.events} />
+            </div>
         </div>
     ); 
   }

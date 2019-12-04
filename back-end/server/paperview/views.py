@@ -167,13 +167,25 @@ def specific_article(request, articleid):
         return JsonResponse(response)
 
     elif request.method == 'GET': # View article
-        # TODO: write method for GET (i.e. specific article page)
-        # WIP
+        # TODO: test
         res = { 'result': 'SUCCESS'}
         with connection.cursor() as cursor:
-            cursor.execute("SELECT ArticleId, Title, PrimaryAuthorId"
-                           "WHERE ArticleId = %s", [articleid])
+            cursor.execute("SELECT ar.ArticleId, ar.Title, ar.PrimaryAuthorId, "
+                           "au.Name, ar.CitedBy, ar.Citations, ar.Year, "
+                           "ar.Url, ar.Publisher, ar.Journal "
+                           "FROM Article ar LEFT JOIN Author au "
+                           "ON ar.PrimaryAuthorId = au.AuthorId "
+                           "WHERE ar.ArticleId = %s",
+                           [articleid])
+            basic_info = cursor.fetchone()
+        res['ArticleId'], res['Title'], res['PrimaryAuthorId'], \
+            res['PrimaryAuthorName'], res['CitedBy'], res['Citations'], \
+            res['Year'], res['Url'], res['Publisher'], res['Journal'] \
+            = basic_info
 
+        res['Authors'] = graph_conn.get_authors_of(articleid)
+        res['GraphData'] = graph_conn.get_graph_data(articleid, 'Article')
+        return JsonResponse(res)
 
     return HttpResponse('Error: Invalid request method')
 
