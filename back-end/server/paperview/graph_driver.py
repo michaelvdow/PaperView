@@ -211,18 +211,18 @@ class Neo4jConnector(object):
 
     def get_how_titles(self):
         with self._driver.session() as session:
-            result = session.read_transaction(self._get_how_titles_query)
-            title_list = []
-            for record in result:
-                title_list.append(record['a.Title'])
-            return title_list
+            return session.read_transaction(self._get_how_titles_query)
+            
 
     @staticmethod
     def _get_how_titles_query(tx):
         result = tx.run ("MATCH (a:Article) "
                          "WHERE a.Title STARTS WITH 'How' "
                          "RETURN a.Title")
-        return result
+        title_list = []
+        for record in result:
+            title_list.append(record['a.Title'])
+        return title_list
 
     def return_greeting(self, message):
         with self._driver.session() as session:
