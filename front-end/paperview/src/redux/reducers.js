@@ -29,6 +29,7 @@ const initialState = {
     detailedType: Constants.AUTHOR,
     detailedID: 0,
     detailedData: [],
+    selectNode: 0,
     graph: {
         nodes: [{ id: 1, label: "NULL"}],
         edges: []
@@ -93,6 +94,8 @@ function rootReducer(state=initialState, action) {
             return Object.assign({}, state, {detailedData: action.input})
         case actionTypes.CHANGE_GRAPH:
             return Object.assign({}, state, {graph: action.input})
+        case actionTypes.ON_SELECT_NODE:
+            return Object.assign({}, state, {selectNode: action.input})
         default:
             return state
     }
