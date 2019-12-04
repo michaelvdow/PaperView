@@ -219,13 +219,13 @@ function *detailed(action) {
             console.log(graph)
             for (var i = 0; i < graph.nodes.length; i++) {
                 if (graph.nodes[i].type === "Article")
-                    graph.nodes[i].color = "yellow orange"
+                    graph.nodes[i].color = "#ffa600"
             }
             for (var i = 0; i < graph.edges.length; i++) {
                 if (graph.edges[i].type === "Wrote")
-                    graph.edges[i].color = "blue"
+                    graph.edges[i].color = "2f4b7c"
                 else
-                    graph.edges[i].color = "green"
+                    graph.edges[i].color = "a05195"
             }
             console.log(graph)
             yield put(actions.changeGraph(graph))
