@@ -271,6 +271,16 @@ function *changedetailed(action) {
 function *updageGraph(action) {
     const data = yield select(selectors.getDetailedData)
     var graph = data.GraphData
+    for (var i = 0; i < graph.nodes.length; i++) {
+        if (graph.nodes[i].type === "Article")
+            graph.nodes[i].color = "#ffa600"
+    }
+    for (var i = 0; i < graph.edges.length; i++) {
+        if (graph.edges[i].type === "Wrote")
+            graph.edges[i].color = "2f4b7c"
+        else
+            graph.edges[i].color = "a05195"
+    }
     yield put(actions.changeGraph(graph))
 }
 
