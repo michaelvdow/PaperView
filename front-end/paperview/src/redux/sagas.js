@@ -269,7 +269,9 @@ function *changedetailed(action) {
 }
 
 function *updageGraph(action) {
-    // UPDATE GRAPH
+    const data = yield select(selectors.getDetailedData)
+    var graph = data.GraphData
+    yield put(actions.changeGraph(graph))
 }
 
 function *watchUpdateGraph() {
@@ -312,7 +314,8 @@ function* rootSaga () {
         watchDeleteRow(),
         watchInsert(),
         watchDetailed(),
-        watchChangedDetailed()
+        watchChangedDetailed(),
+        watchUpdateGraph()
     ])
 }
 
