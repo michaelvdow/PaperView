@@ -2,20 +2,11 @@ import React from 'react';
 import './page.css';
 import { connect } from 'react-redux'
 import Graph from 'react-graph-vis'
+import AuthorDetailForm from './AuthorDetailedForm'
 
 import * as Constants from './Constants'
 import * as selectors from './redux/selectors'
 import * as actions from './redux/actions'
-
-
-function AuthorDetailedForm(props) {
-    console.log(props.data);
-    return (
-        <div id = "AuthorDetailedForm">
-            <p Hi />
-        </div>
-    );
-}
 
 class NeoGraph extends React.Component {
   constructor(props) {
@@ -31,8 +22,9 @@ class NeoGraph extends React.Component {
         width: "600px",
         "physics": {
             "barnesHut": {
-                "springConstant": 0.05,
-                "avoidOverlap": 0.3
+                "avoidOverlap": 0.5,
+                damping: 0.2,
+                springConstant: 0.01
             }
         },
         nodes:{
@@ -56,8 +48,8 @@ class NeoGraph extends React.Component {
 
   render() {
     return (
-        <div>
-            {AuthorDetailedForm(this.props)}
+        <div id="detailPage">
+            <AuthorDetailForm/>
             <Graph graph={this.props.graph} options={this.options} events={this.events} />
         </div>
     ); 

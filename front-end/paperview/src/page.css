@@ -1,0 +1,12 @@
+#detailPage{
+    display:flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#AuthorDetailedForm{
+    display: flex;
+    min-width: 50%;
+    flex-direction: column;
+
+}
