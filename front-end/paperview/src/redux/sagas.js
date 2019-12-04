@@ -224,6 +224,7 @@ function *detailed(action) {
         else 
             yield put(actions.launchSnackBar("Fail to find detailed information"))
     } catch(e) {
+        console.log(e)
         yield put(actions.launchSnackBar("Could not connect to server"))
     }
     

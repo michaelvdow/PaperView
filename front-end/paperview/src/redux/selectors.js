@@ -105,3 +105,7 @@ export const getDetailedID = store => {
 export const getGraph = store => {
     return store.graph;
 }
+
+export const getDetailedData = store => {
+    return store.detailedData;
+}

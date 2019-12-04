@@ -7,18 +7,15 @@ import * as Constants from './Constants'
 import * as selectors from './redux/selectors'
 import * as actions from './redux/actions'
 
-/*
+
 function AuthorDetailedForm(props) {
+    console.log(props.data);
     return (
         <div id = "AuthorDetailedForm">
-            <p "name: = " + this.props.
+            <p Hi />
         </div>
-
-
-
-    )
+    );
 }
-*/
 
 class NeoGraph extends React.Component {
   constructor(props) {
@@ -31,7 +28,13 @@ class NeoGraph extends React.Component {
             color: "#000000"
         },
         height: "600px",
-        width: "600px"
+        width: "600px",
+        "physics": {
+            "barnesHut": {
+                "springConstant": 0,
+                "avoidOverlap": 0.2
+            }
+        }
     };
     this.events = {
         select: function(event) {
@@ -46,8 +49,10 @@ class NeoGraph extends React.Component {
 
   render() {
     return (
-        <Graph graph={this.props.graph} options={this.options} events={this.events} />
-        
+        <div>
+            {AuthorDetailedForm(this.props)}
+            <Graph graph={this.props.graph} options={this.options} events={this.events} />
+        </div>
     ); 
   }
 }
@@ -56,7 +61,8 @@ class NeoGraph extends React.Component {
 const mapStateToProps = (state) => {
     return {
         tab: selectors.getMainTab(state),
-        graph: selectors.getGraph(state)
+        graph: selectors.getGraph(state),
+        data: selectors.getDetailedData(state)
     }
 }
 
