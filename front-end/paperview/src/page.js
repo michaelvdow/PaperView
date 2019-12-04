@@ -18,21 +18,21 @@ class NeoGraph extends React.Component {
         edges: {
             color: "#000000"
         },
-        height: "600px",
-        width: "800px",
-        "physics": {
-            "barnesHut": {
-                "avoidOverlap": 0.5,
-                damping: 0.2,
-                springConstant: 0.01
-            }
-        },
+        height: "700px",
+        width: "700px",
+        
         nodes:{
             shape: 'ellipse',
             widthConstraint: {
                 maximum: 150   
             }
-        }
+        },
+        "physics": {
+            "barnesHut": {
+              "springConstant": 0,
+              "avoidOverlap": 0.2
+            }
+          }
     };
     this.events = {
         select: function(event) {
@@ -49,7 +49,9 @@ class NeoGraph extends React.Component {
     return (
         <div id="detailPage">
             <AuthorDetailForm/>
-            <Graph graph={this.props.graph} options={this.options} events={this.events} />
+            <div id="graph">
+                <Graph graph={this.props.graph} options={this.options} events={this.events} />
+            </div>
         </div>
     ); 
   }
