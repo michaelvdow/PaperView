@@ -239,18 +239,22 @@ function *detailed(action) {
 }
 
 function *changedetailed(action) {
-    var selectNodeId = action.input.nodes[0]
-    const graph = yield select(selectors.getGraph)
-    console.log("id" + selectNodeId)
-    var selectNode = graph.nodes.filter(obj => {
-        return obj.id === selectNodeId
-      })[0]
-    console.log(selectNode)
-    var type = selectNode.type === "Author" ? Constants.AUTHOR : Constants.ARTICLE 
-    var id = selectNode.linkId
-    console.log(type)
-    console.log(id)
     try {
+
+        var selectNodeId = action.input.nodes[0]
+        const graph = yield select(selectors.getGraph)
+        console.log("id" + selectNodeId)
+        var selectNode = graph.nodes.filter(obj => {
+            return obj.id === selectNodeId
+        })[0]
+        if (typeof selectNode === 'undefined') {
+            return
+        }
+        console.log(selectNode)
+        var type = selectNode.type === "Author" ? Constants.AUTHOR : Constants.ARTICLE 
+        var id = selectNode.linkId
+        console.log(type)
+        console.log(id)
         const response = yield call(fetch, `${Constants.URL}/${type}/${id}`)
         const responseBody = yield response.json()
         if (responseBody.result === Constants.SUCCESS) {
