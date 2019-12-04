@@ -109,3 +109,7 @@ export const getGraph = store => {
 export const getDetailedData = store => {
     return store.detailedData;
 }
+
+export const getSelectedNone = store => {
+    return store.selectNode;
+}

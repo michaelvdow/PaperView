@@ -236,7 +236,13 @@ function *detailed(action) {
         console.log(e)
         yield put(actions.launchSnackBar("Could not connect to server"))
     }
-    
+}
+
+function *changedetailed(action) {
+    console.log("in")
+    let {nodes, edges} = yield select(selectors.getSelectedNone)
+    console.log(nodes)
+    console.log(edges)
 }
 
 function *watchUpdateRow() {
@@ -263,6 +269,10 @@ function *watchDetailed() {
     yield takeLatest(actionTypes.ON_GOTO_DETAILED_PAGE, detailed);
 }
 
+function *watchChangedDetailed() {
+    yield takeLatest(actionTypes.ON_SELECT_NODE, changedetailed);
+}
+
 function* rootSaga () {
     yield all([
         watchSubmit(),
@@ -270,7 +280,8 @@ function* rootSaga () {
         watchUpdateRow(),
         watchDeleteRow(),
         watchInsert(),
-        watchDetailed()
+        watchDetailed(),
+        watchChangedDetailed()
     ])
 }
 

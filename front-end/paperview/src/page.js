@@ -34,22 +34,13 @@ class NeoGraph extends React.Component {
             }
         }
     };
-    this.events = {
-        select: function(event) {
-        var { nodes, edges } = event;
-        console.log("Selected nodes:");
-        console.log(nodes);
-        console.log("Selected edges:");
-        console.log(edges);
-        }
-    };
   }
 
   render() {
     return (
         <div id="detailPage">
             <AuthorDetailForm/>
-            <Graph graph={this.props.graph} options={this.options} events={this.events} />
+            <Graph graph={this.props.graph} options={this.options} events={event => this.props.onSelectNode(event)} />
         </div>
     ); 
   }
@@ -66,6 +57,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        onSelectNode: (event) => dispatch(actions.onSelectNode(event))
     }
 }
 
