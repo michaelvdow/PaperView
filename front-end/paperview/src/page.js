@@ -19,7 +19,7 @@ class NeoGraph extends React.Component {
             color: "#000000"
         },
         height: "600px",
-        width: "600px",
+        width: "800px",
         "physics": {
             "barnesHut": {
                 "avoidOverlap": 0.5,
@@ -32,8 +32,7 @@ class NeoGraph extends React.Component {
             widthConstraint: {
                 maximum: 150   
             }
-        },
-        margin: 1
+        }
     };
     this.events = {
         select: function(event) {
