@@ -167,7 +167,13 @@ def specific_article(request, articleid):
         return JsonResponse(response)
 
     elif request.method == 'GET': # View article
-        pass # TODO: write method for GET (i.e. specific article page)
+        # TODO: write method for GET (i.e. specific article page)
+        # WIP
+        res = { 'result': 'SUCCESS'}
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT ArticleId, Title, PrimaryAuthorId"
+                           "WHERE ArticleId = %s", [articleid])
+
 
     return HttpResponse('Error: Invalid request method')
 
