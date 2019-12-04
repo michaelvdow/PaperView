@@ -80,9 +80,13 @@ class Neo4jConnector(object):
 
     @staticmethod
     def _get_nearby_nodes(tx, ID, root_type):
-        result = tx.run("MATCH (root) "
-                        "WHERE ($root_type = 'Article' AND root.ArticleId = $ID) "
-                        "    OR ($root_type = 'Author' AND root.AuthorId = $ID) "
+        if root_type == 'Article':
+            match_clause = "MATCH (root:Article {ArticleId: $ID}) "
+        elif root_type == 'Author':
+            match_clause = "MATCH (root:Author {AuthorId: $ID}) "
+        else:
+            return []
+        result = tx.run(match_clause +
                         "MATCH (root)-[*0..2]-(a) "
                         "WITH DISTINCT a "
                         "WITH LABELS(a)[0] AS type, a "
@@ -111,10 +115,16 @@ class Neo4jConnector(object):
 
     @staticmethod
     def _get_nearby_edges(tx, ID, root_type):
-        result = tx.run("MATCH (root) "
-                        "WHERE ($root_type = 'Article' AND root.ArticleId = $ID) "
-                        "    OR ($root_type = 'Author' AND root.AuthorId = $ID) "
-                        "MATCH (root)-[*0..2]-()-[r]-()-[*0..2]-(root) "
+        if root_type == 'Article':
+            match_clause = "MATCH (root:Article {ArticleId: $ID}) "
+        elif root_type == 'Author':
+            match_clause = "MATCH (root:Author {AuthorId: $ID}) "
+        else:
+            return []
+        result = tx.run(match_clause +
+                        "MATCH (root)-[*0..2]-(a) "
+                        "MATCH (root)-[*0..2]-(b) "
+                        "MATCH (a)-[r]-(b) "
                         "WITH DISTINCT r "
                         "RETURN type(r) AS type, "
                         "id(startNode(r)) AS from, id(endNode(r)) AS to",
@@ -211,18 +221,18 @@ class Neo4jConnector(object):
 
     def get_how_titles(self):
         with self._driver.session() as session:
-            result = session.read_transaction(self._get_how_titles_query)
-            title_list = []
-            for record in result:
-                title_list.append(record['a.Title'])
-            return title_list
+            return session.read_transaction(self._get_how_titles_query)
+            
 
     @staticmethod
     def _get_how_titles_query(tx):
         result = tx.run ("MATCH (a:Article) "
                          "WHERE a.Title STARTS WITH 'How' "
                          "RETURN a.Title")
-        return result
+        title_list = []
+        for record in result:
+            title_list.append(record['a.Title'])
+        return title_list
 
     def return_greeting(self, message):
         with self._driver.session() as session:
