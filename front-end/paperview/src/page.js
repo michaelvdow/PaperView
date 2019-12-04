@@ -24,7 +24,7 @@ class NeoGraph extends React.Component {
             "barnesHut": {
                 "avoidOverlap": 0.5,
                 damping: 0.2,
-                springConstant: 0.01
+                springConstant: 0.00
             }
         },
         nodes:{
