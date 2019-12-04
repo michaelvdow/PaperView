@@ -239,10 +239,25 @@ function *detailed(action) {
 }
 
 function *changedetailed(action) {
-    console.log("in")
-    let {nodes, edges} = yield select(selectors.getSelectedNone)
-    console.log(nodes)
-    console.log(edges)
+    var selectNodeId = action.input.nodes[0]
+    const graph = yield select(selectors.getGraph)
+    var selectNode = graph.nodes[selectNodeId]
+    var type = selectNode.type === "Author" ? Constants.AUTHOR : Constants.ARTICLE 
+    var id = selectNode.linkId
+    console.log(type)
+    console.log(id)
+    try {
+        const response = yield call(fetch, `${Constants.URL}/${type}/${id}`)
+        const responseBody = yield response.json()
+        if (responseBody.result === Constants.SUCCESS) {
+            yield put(actions.changeDetailPage(responseBody))
+        }
+        else 
+            yield put(actions.launchSnackBar("Fail to find detailed information"))
+    } catch(e) {
+        console.log(e)
+        yield put(actions.launchSnackBar("Could not connect to server"))
+    }
 }
 
 function *watchUpdateRow() {
